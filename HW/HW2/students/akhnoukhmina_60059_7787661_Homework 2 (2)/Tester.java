@@ -1,10 +1,6 @@
 
 import java.util.Arrays;
 
-import polynomial.LinearPolynomial;
-import polynomial.Polynomial;
-import polynomial.QuadraticPolynomial;
-
 public class tester {
 	
 	public static Polynomial[] testPolynomials = null;
@@ -13,13 +9,14 @@ public class tester {
 		System.out.println("Test cases for grading Hw2 - Polynomials:\n");
 		
 		//Test1 - Polynomial constructor & toString
-		//printPolynomials();
-		
+		printPolynomials();
+
 		//Test 2 - call polynomial methods
-		//polynomialMethods();
+		polynomialMethods();
+
 		
 		// Test 3 - subclasses
-		//subclassesTests();
+		subclassesTests();
 	}
 	
 	// Test 1 - print polynomials
