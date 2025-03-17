@@ -1,0 +1,27 @@
+Test cases for grading Hw2 - Polynomials:
+
+Print polynomials:
+p0: -6x^4 + 4x^3 - 3x^2 + x + 2 ,  degree 4
+p1: 4 ,  degree 0
+p2: 4 ,  degree 0
+p3: 3x - 1 ,  degree 1
+p4: 3x ,  degree 1
+p5: 3x^2 ,  degree 2
+p6: -2x ,  degree 1
+p7: 2x^3 - 3x^2 + 9x ,  degree 3
+p8: -x^4 + 4x^3 + 2x^2 ,  degree 4
+p9: 0 ,  degree 0
+
+p0 derivative: -24x^3 + 12x^2 - 6x + 1
+p3(2.5): 5.0
+7*p8: -7x^4 + 28x^3 + 14x^2
+p7+p3: 2x^3 - 3x^2 + 3x + 8 , degree 3
+p0-p3: -6x^4 + 4x^3 - 3x^2 - 2x + 3 , degree 4
+p5+p6: 3x^2 - 2x , degree 1
+
+p2+l1: 5x + 6 , degree 1
+l1 solutions: null
+q1 solutions: null
+q2 solutions: null
+q3 solutions: null
+

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -13,6 +14,8 @@ var (
 	studentFilePath      string
 	dependenciesFilePath string
 	testFilePath         string
+	expectedOutputPath   string
+	resultsFilePath      string
 	studentName          []string
 	HW                   string
 )
@@ -120,9 +123,38 @@ func compile(studentPath string, dependPath string, testPath string, binPath str
 	return nil
 }
 
+func grading(studentOutput string, expectedOutput string, totalPoints int) (int, error) {
+	cmd := exec.Command("diff", "-u", expectedOutput, studentOutput)
+
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &out
+
+	err := cmd.Run()
+	if err != nil {
+		// Ignore "exit status 1" since it just means differences were found
+		if exitError, ok := err.(*exec.ExitError); ok && exitError.ExitCode() == 1 {
+			err = nil
+		}
+	}
+
+	diffOutput := out.String()
+	diffLines := 0
+
+	for _, line := range strings.Split(diffOutput, "\n") {
+		if strings.HasPrefix(line, "+") {
+			diffLines++
+		}
+	}
+
+	score := max(totalPoints-int(float64(diffLines)*2.0), 0)
+
+	return score, err
+}
+
 func executeTestFile(binPath string) error {
 	// Creating and Storing Result to .txt
-	resultFile, err := os.Create(fmt.Sprintf("HW/%s/%s_results.txt", HW, studentName[0]))
+	resultFile, err := os.Create(fmt.Sprintf("%s/%s_results.txt", resultsFilePath, studentName[0]))
 	if err != nil {
 		fmt.Println("Error creating output file:", err)
 		return err
@@ -136,6 +168,14 @@ func executeTestFile(binPath string) error {
 		fmt.Println("Error running tester:", err)
 		return err
 	}
+
+	studentOutput, expectedOutput := fmt.Sprintf("%s/%s_results.txt", resultsFilePath, studentName[0]), fmt.Sprintf("%s/output.txt", expectedOutputPath)
+	score, err := grading(studentOutput, expectedOutput, 30)
+	if err != nil {
+		fmt.Println("Error grading:", err)
+		return err
+	}
+	fmt.Println("Grade:", score)
 
 	return nil
 }
@@ -161,6 +201,12 @@ func main() {
 		}
 		if d.Name() == "test" {
 			testFilePath = filepath.Join(path)
+		}
+		if d.Name() == "expectedOutput" {
+			expectedOutputPath = filepath.Join(path)
+		}
+		if d.Name() == "results" {
+			resultsFilePath = filepath.Join(path)
 		}
 
 		return nil
