@@ -45,13 +45,45 @@ func copyFiles(srcDir, destDir string) error {
 	return nil
 }
 
+func deleteJavaFiles(dirPath string) error {
+	files, err := filepath.Glob(filepath.Join(dirPath, "*.java"))
+	if err != nil {
+		return err
+	}
+	for _, file := range files {
+		err := os.Remove(file)
+		if err != nil {
+			fmt.Println("Failure at deleting ", file, err)
+		}
+	}
+	return nil
+}
+
+func cleanBin(binPath string) error {
+	entries, err := os.ReadDir(binPath)
+	if err != nil {
+		return err
+	}
+
+	for _, entrie := range entries {
+		filePath := filepath.Join(binPath, entrie.Name())
+		err := os.RemoveAll(filePath)
+		if err != nil {
+			return err
+		}
+		//fmt.Println("Bin Cleared:", filePath)
+	}
+
+	return nil
+}
+
 func compile(studentPath string, dependPath string, testPath string, binPath string) error {
 	// Copy student's Java files to dependency folder
 	if err := copyFiles(studentPath, dependPath); err != nil {
 		return fmt.Errorf("failed to copy student files: %v", err)
 	}
 
-	cmd := exec.Command("javac", "-d", binPath, "-cp", fmt.Sprintf("%s:%s", dependPath, testPath), "-sourcepath", dependPath)
+	cmd := exec.Command("javac", "-d", binPath, "-cp", binPath)
 	tmpFiles, err := filepath.Glob(filepath.Join(dependPath, "*.java"))
 	if err != nil {
 		return err
@@ -67,12 +99,39 @@ func compile(studentPath string, dependPath string, testPath string, binPath str
 		return fmt.Errorf("compilation failed: %v", err)
 	}
 
+	testFile, err := filepath.Glob(filepath.Join(testPath, "*.java"))
+	if err != nil {
+		return err
+	}
+	cmd = exec.Command("javac", "-d", binPath, "-cp", binPath)
+	cmd.Args = append(cmd.Args, testFile...)
+
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	fmt.Println("Compiling Tester:", testFile)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("compilation failed: %v", err)
+	}
+
+	return nil
+}
+
+func executeTestFile(binPath string) error {
+	cmd := exec.Command("java", "-cp", binPath, "test")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		fmt.Println("Error running tester:", err)
+		return err
+	}
+
 	return nil
 }
 
 func main() {
 	dirPath := "HW/HW2/" // This will be be changed depending on the HW
-	//binPath := filepath.Join(dirPath, "bin")
+	binPath := filepath.Join(dirPath, "bin")
 
 	// This walks through the directory for
 	// gathering student,dependecies,test paths
@@ -139,11 +198,17 @@ func main() {
 			}
 		}
 		fmt.Println("Student Path: ", studentPath)
-		// err = compile(studentPath, dependenciesFilePath, testFilePath, binPath)
-		// if err != nil {
-		// 	fmt.Println("Compilation Error:", err)
-		// 	return
-		// }
+		if err = compile(studentPath, dependenciesFilePath, testFilePath, binPath); err != nil {
+			fmt.Println("Compilation Error:", err)
+		} else if err = executeTestFile(binPath); err != nil {
+			fmt.Println("Execution Error:", err)
+		}
+		if err = deleteJavaFiles(dependenciesFilePath); err != nil {
+			fmt.Printf("deleting failed: %v\n", err)
+		}
+		if err = cleanBin(binPath); err != nil {
+			fmt.Println("Cleaning failed:", err)
+		}
 	}
 
 }

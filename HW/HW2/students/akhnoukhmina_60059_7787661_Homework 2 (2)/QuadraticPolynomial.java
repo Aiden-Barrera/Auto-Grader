@@ -1,6 +1,6 @@
+package polynomial;
 
-
-class QuadraticPolynomial extends Polynomial {
+public class QuadraticPolynomial extends Polynomial {
     public QuadraticPolynomial(int A, int B, int C) {
         super(new int[]{C, B, A});
     }

@@ -1,4 +1,4 @@
-package Polynomial;
+package polynomial;
 
 public class QuadraticPolynomial extends Polynomial {
 	public QuadraticPolynomial(int A, int B, int C) {

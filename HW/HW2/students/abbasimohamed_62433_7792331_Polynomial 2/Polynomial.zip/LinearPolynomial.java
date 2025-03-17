@@ -1,4 +1,4 @@
-package Polynomial;
+package polynomial;
 
 public class LinearPolynomial extends Polynomial {
 	public LinearPolynomial(int a, int b) {

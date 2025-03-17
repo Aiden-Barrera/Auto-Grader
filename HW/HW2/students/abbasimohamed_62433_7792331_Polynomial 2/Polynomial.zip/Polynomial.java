@@ -1,4 +1,4 @@
-package Polynomial;
+package polynomial;
 
 public class Polynomial {
     protected int[] coefficients;
