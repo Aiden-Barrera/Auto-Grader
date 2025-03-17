@@ -6,12 +6,15 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 )
 
 var (
 	studentFilePath      string
 	dependenciesFilePath string
 	testFilePath         string
+	studentName          []string
+	HW                   string
 )
 
 // copyFiles copies all Java files from srcDir to destDir.
@@ -93,7 +96,7 @@ func compile(studentPath string, dependPath string, testPath string, binPath str
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	fmt.Println("Compiling:", tmpFiles)
+	//fmt.Println("Compiling:", tmpFiles)
 
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("compilation failed: %v", err)
@@ -109,7 +112,7 @@ func compile(studentPath string, dependPath string, testPath string, binPath str
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	fmt.Println("Compiling Tester:", testFile)
+	//fmt.Println("Compiling Tester:", testFile)
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("compilation failed: %v", err)
 	}
@@ -118,9 +121,17 @@ func compile(studentPath string, dependPath string, testPath string, binPath str
 }
 
 func executeTestFile(binPath string) error {
+	// Creating and Storing Result to .txt
+	resultFile, err := os.Create(fmt.Sprintf("HW/%s/%s_results.txt", HW, studentName[0]))
+	if err != nil {
+		fmt.Println("Error creating output file:", err)
+		return err
+	}
+	defer resultFile.Close()
+
 	cmd := exec.Command("java", "-cp", binPath, "test")
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = resultFile
+	cmd.Stderr = resultFile
 	if err := cmd.Run(); err != nil {
 		fmt.Println("Error running tester:", err)
 		return err
@@ -130,7 +141,8 @@ func executeTestFile(binPath string) error {
 }
 
 func main() {
-	dirPath := "HW/HW2/" // This will be be changed depending on the HW
+	HW = "HW2"
+	dirPath := fmt.Sprintf("HW/%s/", HW) // This will be be changed depending on the HW
 	binPath := filepath.Join(dirPath, "bin")
 
 	// This walks through the directory for
@@ -167,7 +179,8 @@ func main() {
 	for _, students := range studentEntries {
 		studentPath := ""
 		if students.IsDir() {
-			fmt.Println("Grading Student:", students.Name())
+			studentName = strings.SplitN(students.Name(), "_", 2)
+			fmt.Println("Grading Student:", studentName[0])
 			studentDir := filepath.Join(studentFilePath, students.Name())
 			studentEntries, err = os.ReadDir(studentDir)
 			if err != nil {
@@ -197,7 +210,8 @@ func main() {
 				}
 			}
 		}
-		fmt.Println("Student Path: ", studentPath)
+
+		// Compile and Execute Students Work
 		if err = compile(studentPath, dependenciesFilePath, testFilePath, binPath); err != nil {
 			fmt.Println("Compilation Error:", err)
 		} else if err = executeTestFile(binPath); err != nil {
