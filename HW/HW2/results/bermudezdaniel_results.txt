@@ -25,3 +25,4 @@ q1 solutions: [4.0, -3.0]
 q2 solutions: []
 q3 solutions: [5.0]
 
+Grade for bermudezdaniel: 0

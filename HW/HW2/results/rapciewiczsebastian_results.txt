@@ -22,7 +22,7 @@ p5+p6: - 2x^2 + 3x  , degree 2
 p2+l1: + 9x + 2 , degree 1
 l1 solutions: [-0.4]
 q1 solutions: [4.0, -3.0]
-q2 solutions: [0.0, 0.0]
-q3 solutions: [5.0, 5.0]
+q2 solutions: []
+q3 solutions: [5.0]
 
-Grade for khanrayan: 0
+Grade for rapciewiczsebastian: 0

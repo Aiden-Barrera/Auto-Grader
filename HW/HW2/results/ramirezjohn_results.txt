@@ -25,3 +25,4 @@ q1 solutions: [4.0, -3.0]
 q2 solutions: [0.0, 0.0]
 q3 solutions: [5.0, 5.0]
 
+Grade for ramirezjohn: 0

@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"sync"
 )
 
 var (
@@ -16,8 +17,9 @@ var (
 	testFilePath         string
 	expectedOutputPath   string
 	resultsFilePath      string
-	studentName          []string
 	HW                   string
+	wg                   sync.WaitGroup
+	mu                   sync.Mutex
 )
 
 // copyFiles copies all Java files from srcDir to destDir.
@@ -83,7 +85,7 @@ func cleanBin(binPath string) error {
 	return nil
 }
 
-func compile(studentPath string, dependPath string, testPath string, binPath string) error {
+func compile(studentPath string, dependPath string, testPath string, binPath string, resultFile *os.File) error {
 	// Copy student's Java files to dependency folder
 	if err := copyFiles(studentPath, dependPath); err != nil {
 		return fmt.Errorf("failed to copy student files: %v", err)
@@ -96,8 +98,8 @@ func compile(studentPath string, dependPath string, testPath string, binPath str
 	}
 	cmd.Args = append(cmd.Args, tmpFiles...)
 
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = resultFile
+	cmd.Stderr = resultFile
 
 	//fmt.Println("Compiling:", tmpFiles)
 
@@ -112,8 +114,8 @@ func compile(studentPath string, dependPath string, testPath string, binPath str
 	cmd = exec.Command("javac", "-d", binPath, "-cp", binPath)
 	cmd.Args = append(cmd.Args, testFile...)
 
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = resultFile
+	cmd.Stderr = resultFile
 
 	//fmt.Println("Compiling Tester:", testFile)
 	if err := cmd.Run(); err != nil {
@@ -152,15 +154,7 @@ func grading(studentOutput string, expectedOutput string, totalPoints int) (int,
 	return score, err
 }
 
-func executeTestFile(binPath string) error {
-	// Creating and Storing Result to .txt
-	resultFile, err := os.Create(fmt.Sprintf("%s/%s_results.txt", resultsFilePath, studentName[0]))
-	if err != nil {
-		fmt.Println("Error creating output file:", err)
-		return err
-	}
-	defer resultFile.Close()
-
+func executeTestFile(studentName string, binPath string, resultFile *os.File) error {
 	cmd := exec.Command("java", "-cp", binPath, "test")
 	cmd.Stdout = resultFile
 	cmd.Stderr = resultFile
@@ -169,13 +163,18 @@ func executeTestFile(binPath string) error {
 		return err
 	}
 
-	studentOutput, expectedOutput := fmt.Sprintf("%s/%s_results.txt", resultsFilePath, studentName[0]), fmt.Sprintf("%s/output.txt", expectedOutputPath)
+	studentOutput, expectedOutput := fmt.Sprintf("%s/%s_results.txt", resultsFilePath, studentName), fmt.Sprintf("%s/output.txt", expectedOutputPath)
 	score, err := grading(studentOutput, expectedOutput, 30)
 	if err != nil {
 		fmt.Println("Error grading:", err)
 		return err
 	}
-	fmt.Println("Grade:", score)
+
+	// Protect shared resource with mutex
+	mu.Lock()
+	fmt.Printf("Grade for %s:%d\n", studentName, score)
+	fmt.Fprintf(resultFile, "Grade for %s: %d\n", studentName, score)
+	mu.Unlock()
 
 	return nil
 }
@@ -183,7 +182,6 @@ func executeTestFile(binPath string) error {
 func main() {
 	HW = "HW2"
 	dirPath := fmt.Sprintf("HW/%s/", HW) // This will be be changed depending on the HW
-	binPath := filepath.Join(dirPath, "bin")
 
 	// This walks through the directory for
 	// gathering student,dependecies,test paths
@@ -193,19 +191,16 @@ func main() {
 			return nil
 		}
 
-		if d.Name() == "polynomial" {
+		switch d.Name() {
+		case "polynomial":
 			dependenciesFilePath = filepath.Join(path)
-		}
-		if d.Name() == "students" {
+		case "students":
 			studentFilePath = filepath.Join(path)
-		}
-		if d.Name() == "test" {
+		case "test":
 			testFilePath = filepath.Join(path)
-		}
-		if d.Name() == "expectedOutput" {
+		case "expectedOutput":
 			expectedOutputPath = filepath.Join(path)
-		}
-		if d.Name() == "results" {
+		case "results":
 			resultsFilePath = filepath.Join(path)
 		}
 
@@ -222,22 +217,60 @@ func main() {
 		return
 	}
 
+	errChan := make(chan error, len(studentEntries)*2)
+
+	// Goes down the Students folder
 	for _, students := range studentEntries {
-		studentPath := ""
-		if students.IsDir() {
-			studentName = strings.SplitN(students.Name(), "_", 2)
-			fmt.Println("Grading Student:", studentName[0])
-			studentDir := filepath.Join(studentFilePath, students.Name())
-			studentEntries, err = os.ReadDir(studentDir)
-			if err != nil {
-				fmt.Println("Error Reading ", studentDir)
+		if !students.IsDir() {
+			continue
+		}
+		studentName := strings.SplitN(students.Name(), "_", 2)[0]
+		studentDir := filepath.Join(studentFilePath, students.Name())
+
+		wg.Add(1) // Adding to WaitGroup
+		go func(studentName string, studentDir string) {
+			defer wg.Done()
+			//fmt.Println("Grading Student:", studentName)
+
+			// Create a unique binPath for each student
+			studentBinPath := filepath.Join(dirPath, "bin", studentName)
+			if err := os.MkdirAll(studentBinPath, os.ModePerm); err != nil {
+				errChan <- fmt.Errorf("failed to create bin directory for %s: %v", studentName, err)
 				return
 			}
-			for _, student := range studentEntries {
+
+			studentDependencyPath := filepath.Join(dependenciesFilePath, studentName)
+			if err := os.MkdirAll(studentDependencyPath, os.ModePerm); err != nil {
+				errChan <- fmt.Errorf("failed to create dependency directory for %s: %v", studentName, err)
+				return
+			}
+
+			// Create result file
+			resultFile, err := os.Create(fmt.Sprintf("%s/%s_results.txt", resultsFilePath, studentName))
+			if err != nil {
+				fmt.Println("Error creating output file:", err)
+				return
+			}
+			defer resultFile.Close()
+
+			// Find student's java files
+			studentPath := ""
+			localEntries, localErr := os.ReadDir(studentDir)
+			if localErr != nil {
+				errChan <- fmt.Errorf("error Reading %s: %v", studentDir, localErr)
+				return
+			}
+
+			// Based on each Student's folder, check for path containing java files
+			for _, student := range localEntries {
 				fileDir := filepath.Join(studentDir, student.Name())
 				err = filepath.WalkDir(fileDir, func(path string, d os.DirEntry, err error) error {
 					if err != nil {
 						fmt.Println("Error ", err)
+					}
+
+					if d.IsDir() && d.Name() == "__MACOSX" {
+						return filepath.SkipDir
 					}
 
 					if !d.IsDir() && filepath.Ext(d.Name()) == ".java" {
@@ -251,24 +284,31 @@ func main() {
 				})
 
 				if err != nil {
-					fmt.Println("Error ", err)
+					errChan <- err
 					return
 				}
 			}
-		}
 
-		// Compile and Execute Students Work
-		if err = compile(studentPath, dependenciesFilePath, testFilePath, binPath); err != nil {
-			fmt.Println("Compilation Error:", err)
-		} else if err = executeTestFile(binPath); err != nil {
-			fmt.Println("Execution Error:", err)
-		}
-		if err = deleteJavaFiles(dependenciesFilePath); err != nil {
-			fmt.Printf("deleting failed: %v\n", err)
-		}
-		if err = cleanBin(binPath); err != nil {
-			fmt.Println("Cleaning failed:", err)
-		}
+			// Compile and Execute Students Work
+			if localErr = compile(studentPath, studentDependencyPath, testFilePath, studentBinPath, resultFile); localErr != nil {
+				errChan <- fmt.Errorf("compilation Error for %s: %v", studentName, localErr)
+			} else if localErr = executeTestFile(studentName, studentBinPath, resultFile); localErr != nil {
+				errChan <- fmt.Errorf("execution Error for %s:%v", studentName, localErr)
+			}
+			if localErr = deleteJavaFiles(studentDependencyPath); localErr != nil {
+				fmt.Printf("deleting failed for %s:%v\n", studentName, localErr)
+			}
+			if localErr = cleanBin(studentBinPath); localErr != nil {
+				fmt.Printf("Cleaning failed for %s:%v", studentName, localErr)
+			}
+		}(studentName, studentDir) // Pass variables as arguments to avoid race conditions
+	}
+	wg.Wait()
+	close(errChan)
+
+	// Handle Errors after all goroutines complete
+	for err := range errChan {
+		fmt.Println("Error:", err)
 	}
 
 }

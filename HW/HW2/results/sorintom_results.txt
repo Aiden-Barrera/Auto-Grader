@@ -1,0 +1,115 @@
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:5: error: package polynomial does not exist
+import polynomial.LinearPolynomial;
+                 ^
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:6: error: package polynomial does not exist
+import polynomial.Polynomial;
+                 ^
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:7: error: package polynomial does not exist
+import polynomial.QuadraticPolynomial;
+                 ^
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:10: error: cannot find symbol
+    public static Polynomial[] testPolynomials;  
+                  ^
+  symbol:   class Polynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:89: error: cannot find symbol
+    public static Polynomial[] initTestCases() {
+                  ^
+  symbol:   class Polynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:69: error: cannot find symbol
+        LinearPolynomial l1 = new LinearPolynomial(5, 2);
+        ^
+  symbol:   class LinearPolynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:69: error: cannot find symbol
+        LinearPolynomial l1 = new LinearPolynomial(5, 2);
+                                  ^
+  symbol:   class LinearPolynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:71: error: cannot find symbol
+        QuadraticPolynomial q1 = new QuadraticPolynomial(1, -1, -12);
+        ^
+  symbol:   class QuadraticPolynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:71: error: cannot find symbol
+        QuadraticPolynomial q1 = new QuadraticPolynomial(1, -1, -12);
+                                     ^
+  symbol:   class QuadraticPolynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:72: error: cannot find symbol
+        QuadraticPolynomial q2 = new QuadraticPolynomial(2, 4, 7);
+        ^
+  symbol:   class QuadraticPolynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:72: error: cannot find symbol
+        QuadraticPolynomial q2 = new QuadraticPolynomial(2, 4, 7);
+                                     ^
+  symbol:   class QuadraticPolynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:73: error: cannot find symbol
+        QuadraticPolynomial q3 = new QuadraticPolynomial(1, -10, 25);
+        ^
+  symbol:   class QuadraticPolynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:73: error: cannot find symbol
+        QuadraticPolynomial q3 = new QuadraticPolynomial(1, -10, 25);
+                                     ^
+  symbol:   class QuadraticPolynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:90: error: cannot find symbol
+        return new Polynomial[]{
+                   ^
+  symbol:   class Polynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:91: error: cannot find symbol
+            new Polynomial(new int[]{-6, 4, -3, 1, 2}),
+                ^
+  symbol:   class Polynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:92: error: cannot find symbol
+            new Polynomial(new int[]{4}),
+                ^
+  symbol:   class Polynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:93: error: cannot find symbol
+            new Polynomial(new int[]{0, 4}),
+                ^
+  symbol:   class Polynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:94: error: cannot find symbol
+            new Polynomial(new int[]{3, -1}),
+                ^
+  symbol:   class Polynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:95: error: cannot find symbol
+            new Polynomial(new int[]{0, 3, 0}),
+                ^
+  symbol:   class Polynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:96: error: cannot find symbol
+            new Polynomial(new int[]{0, 3, 0, 0}),
+                ^
+  symbol:   class Polynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:97: error: cannot find symbol
+            new Polynomial(new int[]{0, 0, -2, 0}),
+                ^
+  symbol:   class Polynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:98: error: cannot find symbol
+            new Polynomial(new int[]{2, -3, 0, 9}),
+                ^
+  symbol:   class Polynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:99: error: cannot find symbol
+            new Polynomial(new int[]{0, -1, 4, 0, 0, 2}),
+                ^
+  symbol:   class Polynomial
+  location: class tester
+HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\sorintom\tester.java:100: error: cannot find symbol
+            new Polynomial(new int[]{0, 0, 0, 0})
+                ^
+  symbol:   class Polynomial
+  location: class tester
+24 errors
