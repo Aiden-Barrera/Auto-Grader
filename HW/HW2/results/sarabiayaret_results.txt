@@ -25,3 +25,11 @@ q1 solutions: [4.0, -3.0]
 q2 solutions: []
 q3 solutions: [5.0]
 
+Differences
+> p0: 2x^4 + 1x^3 -3x^2 + 4x -6 ,  degree 4
+> p3: -1x + 3 ,  degree 1
+> p8: 2x^5 + 4x^2 -1x ,  degree 5
+> p0-p3: 2x^4 + 1x^3 -3x^2 + 5x -9 , degree 4
+> p2+l1: 6x + 5 , degree 1
+> 
+Similarity for sarabiayaret: 76.923077%

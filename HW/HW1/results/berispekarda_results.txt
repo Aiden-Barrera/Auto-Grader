@@ -1,0 +1,11 @@
+Week 1 - FlatLand Lab
+point a: (3.2,7.0)
+point b: (1.0,8.6)
+Segment seg: flatland.Segment@681a9515
+length of seg: 0.6000000000000005
+slope of seg: -1.3750000000000004
+Differences
+> Segment seg: flatland.Segment@681a9515
+> length of seg: 0.6000000000000005
+> slope of seg: -1.3750000000000004
+Similarity for berispekarda: 50.000000%

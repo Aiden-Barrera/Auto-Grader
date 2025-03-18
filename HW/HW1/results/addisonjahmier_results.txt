@@ -1,0 +1,11 @@
+Week 1 - FlatLand Lab
+point a: X-coordinate: 3.2 Y-coordinate: 7.0
+point b: X-coordinate: 1.0 Y-coordinate: 8.6
+Segment seg: flatland.Segment@33c7353a
+length of seg: 2.7202941017470885
+slope of seg: -0.7272727272727271
+Differences
+> point a: X-coordinate: 3.2 Y-coordinate: 7.0
+> point b: X-coordinate: 1.0 Y-coordinate: 8.6
+> Segment seg: flatland.Segment@33c7353a
+Similarity for addisonjahmier: 50.000000%

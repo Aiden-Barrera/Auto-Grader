@@ -1,3 +1,5 @@
+Test cases for grading Hw2 - Polynomials:
+
 Print polynomials:
 p0: 2x^4 + x^3 - 3x^2 + 4x - 6 ,  degree 4
 p1: 4 ,  degree 0

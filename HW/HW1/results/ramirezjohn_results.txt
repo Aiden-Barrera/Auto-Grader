@@ -1,0 +1,11 @@
+Week 1 - FlatLand Lab
+point a: (3.20000,7.00000)
+point b: (1.00000,8.60000)
+Segment seg: (3.20000,7.00000)-(1.00000,8.60000)
+length of seg: 2.7202941017470885
+slope of seg: -0.7272727272727271
+Differences
+> point a: (3.20000,7.00000)
+> point b: (1.00000,8.60000)
+> Segment seg: (3.20000,7.00000)-(1.00000,8.60000)
+Similarity for ramirezjohn: 50.000000%
