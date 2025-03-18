@@ -1,4 +1,4 @@
-package main
+package graderbot
 
 import (
 	"bufio"
@@ -216,7 +216,7 @@ func executeTestFile(studentName string, binPath string, resultFile *os.File) er
 	return nil
 }
 
-func main() {
+func GradeStudents() {
 	HW = "HW1"
 	dirPath := fmt.Sprintf("HW/%s/", HW) // This will be be changed depending on the HW
 
