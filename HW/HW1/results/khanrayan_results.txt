@@ -1,3 +1,23 @@
+HW\HW1\test\Tester.java:8: error: cannot find symbol
+		Point a = new Point(3.2,7);
+		^
+  symbol:   class Point
+  location: class Tester
+HW\HW1\test\Tester.java:8: error: cannot find symbol
+		Point a = new Point(3.2,7);
+		              ^
+  symbol:   class Point
+  location: class Tester
+HW\HW1\test\Tester.java:9: error: cannot find symbol
+		Point b = new Point(1,8.6);
+		^
+  symbol:   class Point
+  location: class Tester
+HW\HW1\test\Tester.java:9: error: cannot find symbol
+		Point b = new Point(1,8.6);
+		              ^
+  symbol:   class Point
+  location: class Tester
 HW\HW1\test\Tester.java:11: error: cannot find symbol
 		Segment seg = new Segment(a, b);
 		^
@@ -8,4 +28,4 @@ HW\HW1\test\Tester.java:11: error: cannot find symbol
 		                  ^
   symbol:   class Segment
   location: class Tester
-2 errors
+6 errors
