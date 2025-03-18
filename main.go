@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"io"
@@ -125,8 +126,29 @@ func compile(studentPath string, dependPath string, testPath string, binPath str
 	return nil
 }
 
-func grading(studentOutput string, expectedOutput string, totalPoints int) (int, error) {
-	cmd := exec.Command("diff", "-u", expectedOutput, studentOutput)
+func countLines(filename string) (int, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return 0, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	lineCount := 0
+
+	for scanner.Scan() {
+		lineCount++
+	}
+
+	if err := scanner.Err(); err != nil {
+		return 0, err
+	}
+
+	return lineCount, nil
+}
+
+func grading(studentOutput string, expectedOutput string, totalPoints int, resultFile *os.File) (float64, error) {
+	cmd := exec.Command("diff", "-bw", expectedOutput, studentOutput)
 
 	var out bytes.Buffer
 	cmd.Stdout = &out
@@ -143,15 +165,26 @@ func grading(studentOutput string, expectedOutput string, totalPoints int) (int,
 	diffOutput := out.String()
 	diffLines := 0
 
+	fmt.Fprintf(resultFile, "Differences\n")
 	for _, line := range strings.Split(diffOutput, "\n") {
-		if strings.HasPrefix(line, "+") {
+		if strings.HasPrefix(line, ">") { // What Student got wrong compared to Expected Output
+			fmt.Fprintf(resultFile, "%s\n", line)
 			diffLines++
 		}
 	}
 
-	score := max(totalPoints-int(float64(diffLines)*2.0), 0)
+	totalLines, err := countLines(expectedOutput)
+	if err != nil {
+		return 0, fmt.Errorf("error gathering total lines")
+	}
 
-	return score, err
+	if totalLines == 0 {
+		return 0, fmt.Errorf("expectet output empty")
+	}
+
+	similarity := (1 - float64(diffLines)/float64(totalLines)) * 100
+
+	return similarity, err
 }
 
 func executeTestFile(studentName string, binPath string, resultFile *os.File) error {
@@ -164,7 +197,7 @@ func executeTestFile(studentName string, binPath string, resultFile *os.File) er
 	}
 
 	studentOutput, expectedOutput := fmt.Sprintf("%s/%s_results.txt", resultsFilePath, studentName), fmt.Sprintf("%s/output.txt", expectedOutputPath)
-	score, err := grading(studentOutput, expectedOutput, 30)
+	score, err := grading(studentOutput, expectedOutput, 30, resultFile)
 	if err != nil {
 		fmt.Println("Error grading:", err)
 		return err
@@ -172,8 +205,8 @@ func executeTestFile(studentName string, binPath string, resultFile *os.File) er
 
 	// Protect shared resource with mutex
 	mu.Lock()
-	fmt.Printf("Grade for %s:%d\n", studentName, score)
-	fmt.Fprintf(resultFile, "Grade for %s: %d\n", studentName, score)
+	fmt.Printf("Similarity for %s: %f%%\n", studentName, score)
+	fmt.Fprintf(resultFile, "Similarity for %s: %f%%\n", studentName, score)
 	mu.Unlock()
 
 	return nil
@@ -300,6 +333,9 @@ func main() {
 			}
 			if localErr = cleanBin(studentBinPath); localErr != nil {
 				fmt.Printf("Cleaning failed for %s:%v", studentName, localErr)
+			}
+			if err := os.RemoveAll(studentBinPath); err != nil {
+				fmt.Printf("Failed to delete %s:%v", studentBinPath, err)
 			}
 		}(studentName, studentDir) // Pass variables as arguments to avoid race conditions
 	}

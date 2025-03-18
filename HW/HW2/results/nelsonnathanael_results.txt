@@ -1,4 +1,4 @@
-HW\HW2\students\vermashikhar_LATE_73478_7792597_polynomial-1\polynomial\nelsonnathanael\module-info.java:7: warning: [module] module name component hw3 should avoid terminal digits
+HW\HW2\students\zhoubrandon_64935_7791266_Week_2_Homework\Week_2_Homework\src\polynomial\nelsonnathanael\module-info.java:7: warning: [module] module name component hw3 should avoid terminal digits
 module hw3 {
        ^
 1 warning

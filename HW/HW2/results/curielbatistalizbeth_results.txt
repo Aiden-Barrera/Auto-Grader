@@ -25,4 +25,27 @@ q1 solutions: null
 q2 solutions: null
 q3 solutions: null
 
-Grade for curielbatistalizbeth: 0
+Differences
+> p0:  ,  degree 0
+> p1:  ,  degree 0
+> p2:  ,  degree 0
+> p3:  ,  degree 0
+> p4:  ,  degree 0
+> p5:  ,  degree 0
+> p6:  ,  degree 0
+> p7:  ,  degree 0
+> p8:  ,  degree 0
+> p9:  ,  degree 0
+> p0 derivative: 
+> p3(2.5): 0.0
+> 7*p8: 
+> p7+p3:  , degree 0
+> p0-p3:  , degree 0
+> p5+p6:  , degree 0
+> 
+> p2+l1:  , degree 0
+> l1 solutions: null
+> q1 solutions: null
+> q2 solutions: null
+> q3 solutions: null
+Similarity for curielbatistalizbeth: 15.384615%

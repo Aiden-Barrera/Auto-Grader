@@ -25,4 +25,16 @@ q1 solutions: [4.0, -3.0]
 q2 solutions: []
 q3 solutions: [5.0]
 
-Grade for gonzalezandy: 0
+Differences
+> p0: 2x4 + 1x3 - 3x2 + 4x - 6 ,  degree 4
+> p3:  - 1x + 3 ,  degree 1
+> p6:  - 2x2 ,  degree 2
+> p7: 9x3 - 3x + 2 ,  degree 3
+> p8: 2x5 + 4x2 - 1x ,  degree 5
+> p0 derivative: 8x3 + 3x2 - 6x + 4
+> 7*p8: 14x5 + 28x2 - 7x
+> p7+p3: 9x3 - 4x + 5 , degree 3
+> p0-p3: 2x4 + 1x3 - 3x2 + 5x - 9 , degree 4
+> p5+p6:  - 2x2 + 3x , degree 2
+> 
+Similarity for gonzalezandy: 57.692308%

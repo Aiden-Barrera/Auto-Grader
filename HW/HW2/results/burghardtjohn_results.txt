@@ -25,4 +25,18 @@ q1 solutions: null
 q2 solutions: null
 q3 solutions: null
 
-Grade for burghardtjohn: 0
+Differences
+> p4: +3x ,  degree 2
+> p5: +3x ,  degree 3
+> p6: -2x^2 ,  degree 3
+> p9:  ,  degree 3
+> p0 derivative: +8x^3+3x^2-6x+4
+> p0-p3: +8x^3+3x^2-5x+1 , degree 4
+> p5+p6: -2x^2+3x , degree 3
+> 
+> p2+l1: 6x+5 , degree 1
+> l1 solutions: null
+> q1 solutions: null
+> q2 solutions: null
+> q3 solutions: null
+Similarity for burghardtjohn: 50.000000%

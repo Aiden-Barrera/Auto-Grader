@@ -25,4 +25,23 @@ q1 solutions: [-3.0, 4.0]
 q2 solutions: [NaN, NaN]
 q3 solutions: [5.0, 5.0]
 
-Grade for dhabaliasaahil: 0
+Differences
+> p0: 2x^4 + 1x^3 + -3x^2 + 4x + -6 ,  degree 4
+> p2: 4x + 0 ,  degree 1
+> p3: -1x + 3 ,  degree 1
+> p4: 0x^2 + 3x + 0 ,  degree 2
+> p5: 0x^3 + 0x^2 + 3x + 0 ,  degree 3
+> p6: 0x^3 + -2x^2 + 0x + 0 ,  degree 3
+> p7: 9x^3 + 0x^2 + -3x + 2 ,  degree 3
+> p8: 2x^5 + 0x^4 + 0x^3 + 4x^2 + -1x + 0 ,  degree 5
+> p9: 0x^3 + 0x^2 + 0x + 0 ,  degree 3
+> p0 derivative: 8x^3 + 3x^2 + -6x + 4
+> 7*p8: 14x^5 + 0x^4 + 0x^3 + 28x^2 + -7x + 0
+> p7+p3: 9x^3 + 0x^2 + -4x + 5 , degree 3
+> p0-p3: 2x^4 + 1x^3 + -3x^2 + 5x + -9 , degree 4
+> p5+p6: 0x^3 + -2x^2 + 3x + 0 , degree 3
+> q1 solutions: [-3.0, 4.0]
+> q2 solutions: [NaN, NaN]
+> q3 solutions: [5.0, 5.0]
+> 
+Similarity for dhabaliasaahil: 30.769231%

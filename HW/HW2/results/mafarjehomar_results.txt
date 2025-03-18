@@ -25,4 +25,9 @@ q1 solutions: [4.0, -3.0]
 q2 solutions: []
 q3 solutions: [5.0]
 
-Grade for mafarjehomar: 14
+Differences
+> p3: x + 3 ,  degree 1
+> p6: 2x^2 ,  degree 2
+> p5+p6: 2x^2 + 3x , degree 2
+> 
+Similarity for mafarjehomar: 84.615385%
