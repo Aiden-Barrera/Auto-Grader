@@ -1,0 +1,11 @@
+HW\HW1\test\Tester.java:11: error: cannot find symbol
+		Segment seg = new Segment(a, b);
+		^
+  symbol:   class Segment
+  location: class Tester
+HW\HW1\test\Tester.java:11: error: cannot find symbol
+		Segment seg = new Segment(a, b);
+		                  ^
+  symbol:   class Segment
+  location: class Tester
+2 errors

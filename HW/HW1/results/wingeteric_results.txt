@@ -1,0 +1,13 @@
+Week 1 - FlatLand Lab
+point a: flatland.Point@2c7b84de
+point b: flatland.Point@30f39991
+Segment seg: flatland.Segment@452b3a41
+length of seg: 0.0
+slope of seg: 0.0
+Differences
+> point a: flatland.Point@2c7b84de
+> point b: flatland.Point@30f39991
+> Segment seg: flatland.Segment@452b3a41
+> length of seg: 0.0
+> slope of seg: 0.0
+Similarity for wingeteric: 16.666667%

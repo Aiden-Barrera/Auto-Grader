@@ -1,0 +1,11 @@
+Week 1 - FlatLand Lab
+point a: ("3.2", "7.0")
+point b: ("1.0", "8.6")
+Segment seg: (x1, y1)-(x2,y2)=2.720294
+length of seg: 2.7202941017470885
+slope of seg: -0.7272727272727271
+Differences
+> point a: ("3.2", "7.0")
+> point b: ("1.0", "8.6")
+> Segment seg: (x1, y1)-(x2,y2)=2.720294
+Similarity for figueroaaiden: 50.000000%

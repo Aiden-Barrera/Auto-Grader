@@ -1,0 +1,41 @@
+HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\salinasdiego\Segment.java:3: error: cannot find symbol
+	private Point a;
+	        ^
+  symbol:   class Point
+  location: class Segment
+HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\salinasdiego\Segment.java:4: error: cannot find symbol
+	private Point b;
+	        ^
+  symbol:   class Point
+  location: class Segment
+HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\salinasdiego\Segment.java:6: error: cannot find symbol
+	public Segment (Point a, Point b) {
+	                ^
+  symbol:   class Point
+  location: class Segment
+HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\salinasdiego\Segment.java:6: error: cannot find symbol
+	public Segment (Point a, Point b) {
+	                         ^
+  symbol:   class Point
+  location: class Segment
+HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\salinasdiego\Segment.java:11: error: cannot find symbol
+	public void setEndPoints(Point a, Point b) {
+	                         ^
+  symbol:   class Point
+  location: class Segment
+HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\salinasdiego\Segment.java:11: error: cannot find symbol
+	public void setEndPoints(Point a, Point b) {
+	                                  ^
+  symbol:   class Point
+  location: class Segment
+HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\salinasdiego\Segment.java:17: error: cannot find symbol
+		this.a = new Point(x1, y1);
+		             ^
+  symbol:   class Point
+  location: class Segment
+HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\salinasdiego\Segment.java:18: error: cannot find symbol
+		this.b = new Point(x2, y2);
+		             ^
+  symbol:   class Point
+  location: class Segment
+8 errors

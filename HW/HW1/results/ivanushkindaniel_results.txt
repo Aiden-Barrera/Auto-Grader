@@ -1,0 +1,11 @@
+Week 1 - FlatLand Lab
+Exception in thread "main" java.util.UnknownFormatConversionException: Conversion = 'y'
+	at java.base/java.util.Formatter$FormatSpecifier.conversion(Formatter.java:2947)
+	at java.base/java.util.Formatter$FormatSpecifier.<init>(Formatter.java:2983)
+	at java.base/java.util.Formatter.parse(Formatter.java:2839)
+	at java.base/java.util.Formatter.format(Formatter.java:2763)
+	at java.base/java.util.Formatter.format(Formatter.java:2717)
+	at java.base/java.lang.String.format(String.java:4150)
+	at flatland.Point.toString(Point.java:31)
+	at java.base/java.lang.String.valueOf(String.java:4225)
+	at flatland.Tester.main(Tester.java:13)

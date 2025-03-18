@@ -23,7 +23,7 @@ var (
 	mu                   sync.Mutex
 )
 
-// copyFiles copies all Java files from srcDir to destDir.
+// copyFiles copies all Java files from srcDir to destDir, except for a specific file.
 func copyFiles(srcDir, destDir string) error {
 	files, err := filepath.Glob(filepath.Join(srcDir, "*.java"))
 	if err != nil {
@@ -32,6 +32,9 @@ func copyFiles(srcDir, destDir string) error {
 
 	for _, file := range files {
 		_, fileName := filepath.Split(file)
+		if fileName == "Tester.java" { // Avoid Student's Tester file
+			continue // Skip the specific file
+		}
 		destPath := filepath.Join(destDir, fileName)
 
 		srcFile, err := os.Open(file)
@@ -87,7 +90,7 @@ func cleanBin(binPath string) error {
 }
 
 func compile(studentPath string, dependPath string, testPath string, binPath string, resultFile *os.File) error {
-	// Copy student's Java files to dependency folder
+	// Copy student's Java files to dependency folder, skipping a specific file
 	if err := copyFiles(studentPath, dependPath); err != nil {
 		return fmt.Errorf("failed to copy student files: %v", err)
 	}
@@ -188,7 +191,8 @@ func grading(studentOutput string, expectedOutput string, totalPoints int, resul
 }
 
 func executeTestFile(studentName string, binPath string, resultFile *os.File) error {
-	cmd := exec.Command("java", "-cp", binPath, "test")
+	// Use the fully qualified name of the Tester class
+	cmd := exec.Command("java", "-cp", binPath, "flatland.Tester") // This changes based on whether the test is in a package
 	cmd.Stdout = resultFile
 	cmd.Stderr = resultFile
 	if err := cmd.Run(); err != nil {
@@ -213,7 +217,7 @@ func executeTestFile(studentName string, binPath string, resultFile *os.File) er
 }
 
 func main() {
-	HW = "HW2"
+	HW = "HW1"
 	dirPath := fmt.Sprintf("HW/%s/", HW) // This will be be changed depending on the HW
 
 	// This walks through the directory for
@@ -225,7 +229,7 @@ func main() {
 		}
 
 		switch d.Name() {
-		case "polynomial":
+		case "flatland": // Change this to correct package name
 			dependenciesFilePath = filepath.Join(path)
 		case "students":
 			studentFilePath = filepath.Join(path)

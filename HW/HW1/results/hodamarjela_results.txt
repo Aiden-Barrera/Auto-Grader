@@ -1,0 +1,7 @@
+Error: Could not find or load main class flatland.Tester
+Caused by: java.lang.ClassNotFoundException: flatland.Tester
+41017470885
+slope of seg: -0.7272727272727271
+Differences
+> Segment seg: (3.2,7.0)_(1.0,8.6)
+Similarity for hodamarjela: 83.333333%
