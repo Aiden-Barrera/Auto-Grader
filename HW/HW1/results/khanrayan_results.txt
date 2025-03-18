@@ -1,23 +1,9 @@
-HW\HW1\test\Tester.java:8: error: cannot find symbol
+HW\HW1\test\Tester.java:8: error: cannot access Point
 		Point a = new Point(3.2,7);
 		^
-  symbol:   class Point
-  location: class Tester
-HW\HW1\test\Tester.java:8: error: cannot find symbol
-		Point a = new Point(3.2,7);
-		              ^
-  symbol:   class Point
-  location: class Tester
-HW\HW1\test\Tester.java:9: error: cannot find symbol
-		Point b = new Point(1,8.6);
-		^
-  symbol:   class Point
-  location: class Tester
-HW\HW1\test\Tester.java:9: error: cannot find symbol
-		Point b = new Point(1,8.6);
-		              ^
-  symbol:   class Point
-  location: class Tester
+  bad class file: HW\HW1\bin\khanrayan\flatland\Point.class
+    unable to access file: java.nio.file.NoSuchFileException: C:\Users\Aiden\OneDrive\Desktop\GOProjects\Auto-grader-repo\Auto-Grader\HW\HW1\bin\khanrayan\flatland\Point.class
+    Please remove or make sure it appears in the correct subdirectory of the classpath.
 HW\HW1\test\Tester.java:11: error: cannot find symbol
 		Segment seg = new Segment(a, b);
 		^
@@ -28,4 +14,4 @@ HW\HW1\test\Tester.java:11: error: cannot find symbol
 		                  ^
   symbol:   class Segment
   location: class Tester
-6 errors
+3 errors

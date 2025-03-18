@@ -1,10 +1,11 @@
-package main 
+package main
 
 import (
+	"Auto-Grader/graderbot"
 	"fmt"
-	"github.com/Aiden-Barrera/Auto-Grader/graderbot"
 )
 
 func main() {
-
+	fmt.Println("Starting Auto Grading")
+	graderbot.GradeStudents()
 }
