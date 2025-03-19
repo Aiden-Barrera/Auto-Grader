@@ -24,6 +24,25 @@ var (
 	gradedMu             sync.Mutex
 )
 
+type Config struct {
+	testName string
+	mu       sync.Mutex
+}
+
+var GraderConfig = Config{testName: "flatland.Tester"}
+
+func (c *Config) SetTestName(newTestName string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.testName = newTestName
+}
+
+func (c *Config) GetTestName() string {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return c.testName
+}
+
 // copyFiles copies all Java files from srcDir to destDir, except for a specific file.
 func copyFiles(srcDir, destDir string) error {
 	files, err := filepath.Glob(filepath.Join(srcDir, "*.java"))
@@ -192,8 +211,9 @@ func grading(studentOutput string, expectedOutput string, resultFile *os.File) (
 }
 
 func executeTestFile(studentName string, binPath string, resultFile *os.File, errChan chan error) error {
-	// Use the fully qualified name of the Tester class
-	cmd := exec.Command("java", "-cp", binPath, "flatland.Tester") // This changes based on whether the test is in a package
+	testName := GraderConfig.GetTestName() // Dynamically Get Test Name
+
+	cmd := exec.Command("java", "-cp", binPath, testName)
 	cmd.Stdout = resultFile
 	cmd.Stderr = resultFile
 	if err := cmd.Run(); err != nil {
