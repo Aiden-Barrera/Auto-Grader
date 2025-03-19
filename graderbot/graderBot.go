@@ -25,16 +25,18 @@ var (
 )
 
 type Config struct {
-	testName string
-	mu       sync.RWMutex
+	testName    string
+	packageName string
+	mu          sync.RWMutex
 }
 
 var GraderConfig = Config{testName: "flatland.Tester"}
 
-func (c *Config) SetTestName(newTestName string) {
+func (c *Config) SetTestName(newTestName string, newPackageName string) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.testName = newTestName
+	c.packageName = newPackageName
 }
 
 func (c *Config) GetTestName() string {
@@ -52,7 +54,7 @@ func copyFiles(srcDir, destDir string) error {
 
 	for _, file := range files {
 		_, fileName := filepath.Split(file)
-		if fileName == "Tester.java" { // Avoid Student's Tester file
+		if fileName == fmt.Sprintf("%s.java", GraderConfig.testName) { // Avoid Student's Tester file
 			continue // Skip the specific file
 		}
 		destPath := filepath.Join(destDir, fileName)
@@ -252,7 +254,7 @@ func GradeStudents(selectedHW string) {
 		}
 
 		switch d.Name() {
-		case "flatland": // Change this to correct package name
+		case GraderConfig.packageName: // Change this to correct package name
 			dependenciesFilePath = filepath.Join(path)
 		case "students":
 			studentFilePath = filepath.Join(path)
@@ -380,6 +382,7 @@ func GradeStudents(selectedHW string) {
 
 	// Handle Errors after all goroutines complete
 	fmt.Println()
+	fmt.Println("Error Logs")
 	for err := range errChan {
 		fmt.Println("Error:", err)
 	}

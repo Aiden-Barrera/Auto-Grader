@@ -6,6 +6,7 @@ package cmd
 import (
 	"Auto-Grader/cmd/ui/listInputs"
 	"Auto-Grader/cmd/ui/textInputs"
+	"Auto-Grader/graderbot"
 	"fmt"
 	"os"
 
@@ -53,7 +54,16 @@ var runCmd = &cobra.Command{
 			return
 		}
 
-		textInputs.InputText.SetInputText("What is the name of Test Package", "Enter Package.")
+		textInputs.InputText.SetInputText(fmt.Sprintf("What is the name of the Package used for %s", selectedHomework), fmt.Sprintf("Enter %s Package.", selectedHomework))
+		tprogram = tea.NewProgram(textInputs.InitializeTextInput())
+		model, err = tprogram.Run()
+		if err != nil {
+			cobra.CheckErr(err)
+		}
+
+		selectedHomeworkPackage := model.(textInputs.Model).GetInputText()
+
+		textInputs.InputText.SetInputText("What is the name of Test Package (Leave blank if none)", "Enter Package.")
 		tprogram = tea.NewProgram(textInputs.InitializeTextInput())
 		model, err = tprogram.Run()
 		if err != nil {
@@ -61,7 +71,6 @@ var runCmd = &cobra.Command{
 		}
 
 		selectedPackage := model.(textInputs.Model).GetInputText()
-		fmt.Println(selectedPackage)
 
 		textInputs.InputText.SetInputText("What is the name of the Test file (Not including .java)", "Enter Test.")
 		tprogram = tea.NewProgram(textInputs.InitializeTextInput())
@@ -71,10 +80,14 @@ var runCmd = &cobra.Command{
 		}
 
 		selectedTestName := model.(textInputs.Model).GetInputText()
-		fmt.Println(selectedTestName)
 
 		// Call the grading function with the selected homework
-		//graderbot.GradeStudents(selectedHomework)
+		if selectedPackage == "" {
+			graderbot.GraderConfig.SetTestName(selectedTestName, selectedHomeworkPackage)
+		} else {
+			graderbot.GraderConfig.SetTestName(fmt.Sprintf("%s.%s", selectedPackage, selectedTestName), selectedHomeworkPackage)
+		}
+		graderbot.GradeStudents(selectedHomework)
 	},
 }
 

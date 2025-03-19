@@ -1,11 +1,21 @@
-HW\HW1\test\Tester.java:11: error: cannot find symbol
-		Segment seg = new Segment(a, b);
+HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\khanrayan\Tester.java:14: error: cannot find symbol
+		Segment seg1 = new Segment(p1, p2);
 		^
   symbol:   class Segment
   location: class Tester
-HW\HW1\test\Tester.java:11: error: cannot find symbol
-		Segment seg = new Segment(a, b);
-		                  ^
+HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\khanrayan\Tester.java:14: error: cannot find symbol
+		Segment seg1 = new Segment(p1, p2);
+		                   ^
   symbol:   class Segment
   location: class Tester
-2 errors
+HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\khanrayan\Tester.java:15: error: cannot find symbol
+		Segment seg2 = new Segment(p2, new Point (5,7));
+		^
+  symbol:   class Segment
+  location: class Tester
+HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\khanrayan\Tester.java:15: error: cannot find symbol
+		Segment seg2 = new Segment(p2, new Point (5,7));
+		                   ^
+  symbol:   class Segment
+  location: class Tester
+4 errors
