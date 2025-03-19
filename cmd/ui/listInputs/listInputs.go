@@ -89,7 +89,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	if m.Choice != "" {
-		return quitTextStyle.Render(fmt.Sprintf("Commencing Grading for %s", m.Choice))
+		return quitTextStyle.Render(fmt.Sprintf("Picked: %s", m.Choice))
 	}
 	if m.quitting {
 		return quitTextStyle.Render("Bye Bye!")

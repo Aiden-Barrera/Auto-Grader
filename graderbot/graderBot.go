@@ -379,6 +379,7 @@ func GradeStudents(selectedHW string) {
 	close(errChan)
 
 	// Handle Errors after all goroutines complete
+	fmt.Println()
 	for err := range errChan {
 		fmt.Println("Error:", err)
 	}

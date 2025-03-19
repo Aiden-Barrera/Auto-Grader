@@ -5,7 +5,8 @@ package cmd
 
 import (
 	"Auto-Grader/cmd/ui/listInputs"
-	"Auto-Grader/graderbot"
+	"Auto-Grader/cmd/ui/textInputs"
+	"fmt"
 	"os"
 
 	"github.com/charmbracelet/bubbles/list"
@@ -52,8 +53,28 @@ var runCmd = &cobra.Command{
 			return
 		}
 
+		textInputs.InputText.SetInputText("What is the name of Test Package", "Enter Package.")
+		tprogram = tea.NewProgram(textInputs.InitializeTextInput())
+		model, err = tprogram.Run()
+		if err != nil {
+			cobra.CheckErr(err)
+		}
+
+		selectedPackage := model.(textInputs.Model).GetInputText()
+		fmt.Println(selectedPackage)
+
+		textInputs.InputText.SetInputText("What is the name of the Test file (Not including .java)", "Enter Test.")
+		tprogram = tea.NewProgram(textInputs.InitializeTextInput())
+		model, err = tprogram.Run()
+		if err != nil {
+			cobra.CheckErr(err)
+		}
+
+		selectedTestName := model.(textInputs.Model).GetInputText()
+		fmt.Println(selectedTestName)
+
 		// Call the grading function with the selected homework
-		graderbot.GradeStudents(selectedHomework)
+		//graderbot.GradeStudents(selectedHomework)
 	},
 }
 
