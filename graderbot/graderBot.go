@@ -26,7 +26,7 @@ var (
 
 type Config struct {
 	testName string
-	mu       sync.Mutex
+	mu       sync.RWMutex
 }
 
 var GraderConfig = Config{testName: "flatland.Tester"}
@@ -38,8 +38,8 @@ func (c *Config) SetTestName(newTestName string) {
 }
 
 func (c *Config) GetTestName() string {
-	c.mu.Lock()
-	defer c.mu.Unlock()
+	c.mu.RLock()
+	defer c.mu.RUnlock()
 	return c.testName
 }
 
