@@ -21,6 +21,7 @@ var (
 	HW                   string
 	wg                   sync.WaitGroup
 	mu                   sync.Mutex
+	gradedMu             sync.Mutex
 )
 
 // copyFiles copies all Java files from srcDir to destDir, except for a specific file.
@@ -150,7 +151,7 @@ func countLines(filename string) (int, error) {
 	return lineCount, nil
 }
 
-func grading(studentOutput string, expectedOutput string, totalPoints int, resultFile *os.File) (float64, error) {
+func grading(studentOutput string, expectedOutput string, resultFile *os.File) (float64, error) {
 	cmd := exec.Command("diff", "-bw", expectedOutput, studentOutput)
 
 	var out bytes.Buffer
@@ -190,20 +191,20 @@ func grading(studentOutput string, expectedOutput string, totalPoints int, resul
 	return similarity, err
 }
 
-func executeTestFile(studentName string, binPath string, resultFile *os.File) error {
+func executeTestFile(studentName string, binPath string, resultFile *os.File, errChan chan error) error {
 	// Use the fully qualified name of the Tester class
 	cmd := exec.Command("java", "-cp", binPath, "flatland.Tester") // This changes based on whether the test is in a package
 	cmd.Stdout = resultFile
 	cmd.Stderr = resultFile
 	if err := cmd.Run(); err != nil {
-		fmt.Println("Error running tester:", err)
+		errChan <- fmt.Errorf("error running tester for %s: %v", studentName, err)
 		return err
 	}
 
 	studentOutput, expectedOutput := fmt.Sprintf("%s/%s_results.txt", resultsFilePath, studentName), fmt.Sprintf("%s/output.txt", expectedOutputPath)
-	score, err := grading(studentOutput, expectedOutput, 30, resultFile)
+	score, err := grading(studentOutput, expectedOutput, resultFile)
 	if err != nil {
-		fmt.Println("Error grading:", err)
+		errChan <- fmt.Errorf("error grading %s: %v", studentName, err)
 		return err
 	}
 
@@ -216,9 +217,11 @@ func executeTestFile(studentName string, binPath string, resultFile *os.File) er
 	return nil
 }
 
-func GradeStudents() {
-	HW = "HW1"
+func GradeStudents(selectedHW string) {
+	HW := selectedHW
 	dirPath := fmt.Sprintf("HW/%s/", HW) // This will be be changed depending on the HW
+
+	gradedStudents := make(map[string]bool)
 
 	// This walks through the directory for
 	// gathering student,dependecies,test paths
@@ -263,6 +266,15 @@ func GradeStudents() {
 		}
 		studentName := strings.SplitN(students.Name(), "_", 2)[0]
 		studentDir := filepath.Join(studentFilePath, students.Name())
+
+		gradedMu.Lock()
+		if gradedStudents[studentName] {
+			errChan <- fmt.Errorf("%s has multiple folders, please combine their folders", studentName)
+			gradedMu.Unlock()
+			continue
+		}
+		gradedStudents[studentName] = true
+		gradedMu.Unlock()
 
 		wg.Add(1) // Adding to WaitGroup
 		go func(studentName string, studentDir string) {
@@ -329,17 +341,17 @@ func GradeStudents() {
 			// Compile and Execute Students Work
 			if localErr = compile(studentPath, studentDependencyPath, testFilePath, studentBinPath, resultFile); localErr != nil {
 				errChan <- fmt.Errorf("compilation Error for %s: %v", studentName, localErr)
-			} else if localErr = executeTestFile(studentName, studentBinPath, resultFile); localErr != nil {
-				errChan <- fmt.Errorf("execution Error for %s:%v", studentName, localErr)
+			} else if localErr = executeTestFile(studentName, studentBinPath, resultFile, errChan); localErr != nil {
+				errChan <- fmt.Errorf("execution Error for %s: %v", studentName, localErr)
 			}
 			if localErr = deleteJavaFiles(studentDependencyPath); localErr != nil {
-				fmt.Printf("deleting failed for %s:%v\n", studentName, localErr)
+				errChan <- fmt.Errorf("deleting failed for %s: %v", studentName, localErr)
 			}
 			if localErr = cleanBin(studentBinPath); localErr != nil {
-				fmt.Printf("Cleaning failed for %s:%v", studentName, localErr)
+				errChan <- fmt.Errorf("cleaning failed for %s: %v", studentName, localErr)
 			}
 			if err := os.RemoveAll(studentBinPath); err != nil {
-				fmt.Printf("Failed to delete %s:%v", studentBinPath, err)
+				errChan <- fmt.Errorf("failed to delete %s: %v", studentBinPath, err)
 			}
 		}(studentName, studentDir) // Pass variables as arguments to avoid race conditions
 	}
