@@ -1,4 +1,4 @@
-package main
+package graderbot
 
 import (
 	"bufio"
@@ -21,7 +21,29 @@ var (
 	HW                   string
 	wg                   sync.WaitGroup
 	mu                   sync.Mutex
+	gradedMu             sync.Mutex
 )
+
+type Config struct {
+	testName    string
+	packageName string
+	mu          sync.RWMutex
+}
+
+var GraderConfig = Config{testName: "flatland.Tester"}
+
+func (c *Config) SetTestName(newTestName string, newPackageName string) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	c.testName = newTestName
+	c.packageName = newPackageName
+}
+
+func (c *Config) GetTestName() string {
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	return c.testName
+}
 
 // copyFiles copies all Java files from srcDir to destDir, except for a specific file.
 func copyFiles(srcDir, destDir string) error {
@@ -32,7 +54,7 @@ func copyFiles(srcDir, destDir string) error {
 
 	for _, file := range files {
 		_, fileName := filepath.Split(file)
-		if fileName == "Tester.java" { // Avoid Student's Tester file
+		if fileName == fmt.Sprintf("%s.java", GraderConfig.testName) { // Avoid Student's Tester file
 			continue // Skip the specific file
 		}
 		destPath := filepath.Join(destDir, fileName)
@@ -150,7 +172,7 @@ func countLines(filename string) (int, error) {
 	return lineCount, nil
 }
 
-func grading(studentOutput string, expectedOutput string, totalPoints int, resultFile *os.File) (float64, error) {
+func grading(studentOutput string, expectedOutput string, resultFile *os.File) (float64, error) {
 	cmd := exec.Command("diff", "-bw", expectedOutput, studentOutput)
 
 	var out bytes.Buffer
@@ -190,20 +212,21 @@ func grading(studentOutput string, expectedOutput string, totalPoints int, resul
 	return similarity, err
 }
 
-func executeTestFile(studentName string, binPath string, resultFile *os.File) error {
-	// Use the fully qualified name of the Tester class
-	cmd := exec.Command("java", "-cp", binPath, "flatland.Tester") // This changes based on whether the test is in a package
+func executeTestFile(studentName string, binPath string, resultFile *os.File, errChan chan error) error {
+	testName := GraderConfig.GetTestName() // Dynamically Get Test Name
+
+	cmd := exec.Command("java", "-cp", binPath, testName)
 	cmd.Stdout = resultFile
 	cmd.Stderr = resultFile
 	if err := cmd.Run(); err != nil {
-		fmt.Println("Error running tester:", err)
+		errChan <- fmt.Errorf("error running tester for %s: %v", studentName, err)
 		return err
 	}
 
 	studentOutput, expectedOutput := fmt.Sprintf("%s/%s_results.txt", resultsFilePath, studentName), fmt.Sprintf("%s/output.txt", expectedOutputPath)
-	score, err := grading(studentOutput, expectedOutput, 30, resultFile)
+	score, err := grading(studentOutput, expectedOutput, resultFile)
 	if err != nil {
-		fmt.Println("Error grading:", err)
+		errChan <- fmt.Errorf("error grading %s: %v", studentName, err)
 		return err
 	}
 
@@ -216,9 +239,11 @@ func executeTestFile(studentName string, binPath string, resultFile *os.File) er
 	return nil
 }
 
-func main() {
-	HW = "HW1"
+func GradeStudents(selectedHW string) {
+	HW := selectedHW
 	dirPath := fmt.Sprintf("HW/%s/", HW) // This will be be changed depending on the HW
+
+	gradedStudents := make(map[string]bool)
 
 	// This walks through the directory for
 	// gathering student,dependecies,test paths
@@ -229,7 +254,7 @@ func main() {
 		}
 
 		switch d.Name() {
-		case "flatland": // Change this to correct package name
+		case GraderConfig.packageName: // Change this to correct package name
 			dependenciesFilePath = filepath.Join(path)
 		case "students":
 			studentFilePath = filepath.Join(path)
@@ -263,6 +288,15 @@ func main() {
 		}
 		studentName := strings.SplitN(students.Name(), "_", 2)[0]
 		studentDir := filepath.Join(studentFilePath, students.Name())
+
+		gradedMu.Lock()
+		if gradedStudents[studentName] {
+			errChan <- fmt.Errorf("%s has multiple folders, please combine their folders", studentName)
+			gradedMu.Unlock()
+			continue
+		}
+		gradedStudents[studentName] = true
+		gradedMu.Unlock()
 
 		wg.Add(1) // Adding to WaitGroup
 		go func(studentName string, studentDir string) {
@@ -329,17 +363,17 @@ func main() {
 			// Compile and Execute Students Work
 			if localErr = compile(studentPath, studentDependencyPath, testFilePath, studentBinPath, resultFile); localErr != nil {
 				errChan <- fmt.Errorf("compilation Error for %s: %v", studentName, localErr)
-			} else if localErr = executeTestFile(studentName, studentBinPath, resultFile); localErr != nil {
-				errChan <- fmt.Errorf("execution Error for %s:%v", studentName, localErr)
+			} else if localErr = executeTestFile(studentName, studentBinPath, resultFile, errChan); localErr != nil {
+				errChan <- fmt.Errorf("execution Error for %s: %v", studentName, localErr)
 			}
 			if localErr = deleteJavaFiles(studentDependencyPath); localErr != nil {
-				fmt.Printf("deleting failed for %s:%v\n", studentName, localErr)
+				errChan <- fmt.Errorf("deleting failed for %s: %v", studentName, localErr)
 			}
 			if localErr = cleanBin(studentBinPath); localErr != nil {
-				fmt.Printf("Cleaning failed for %s:%v", studentName, localErr)
+				errChan <- fmt.Errorf("cleaning failed for %s: %v", studentName, localErr)
 			}
 			if err := os.RemoveAll(studentBinPath); err != nil {
-				fmt.Printf("Failed to delete %s:%v", studentBinPath, err)
+				errChan <- fmt.Errorf("failed to delete %s: %v", studentBinPath, err)
 			}
 		}(studentName, studentDir) // Pass variables as arguments to avoid race conditions
 	}
@@ -347,6 +381,8 @@ func main() {
 	close(errChan)
 
 	// Handle Errors after all goroutines complete
+	fmt.Println()
+	fmt.Println("Error Logs")
 	for err := range errChan {
 		fmt.Println("Error:", err)
 	}

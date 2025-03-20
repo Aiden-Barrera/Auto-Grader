@@ -1,15 +1,11 @@
-Week 1 - FlatLand Lab
-point a: (3.2,7.0)
-point b: (1.0,8.6)
-Segment seg: (3.2,7.0)_(1.0,8.6)
-length of seg: 2.7202941017470885
-slope of seg: -0.7272727272727271
-Differences
-> Segment seg: (3.2,7.0)_(1.0,8.6)
-> Differences
-> > Segment seg: (3.2,7.0)_(1.0,8.6)
-> > Differences
-> > > Segment seg: (3.2,7.0)_(1.0,8.6)
-> > Similarity for hodamarjela: 83.333333%
-> Similarity for hodamarjela: 33.333333%
-Similarity for hodamarjela: -16.666667%
+HW\HW1\test\Tester.java:11: error: cannot find symbol
+		Segment seg = new Segment(a, b);
+		^
+  symbol:   class Segment
+  location: class Tester
+HW\HW1\test\Tester.java:11: error: cannot find symbol
+		Segment seg = new Segment(a, b);
+		                  ^
+  symbol:   class Segment
+  location: class Tester
+2 errors
