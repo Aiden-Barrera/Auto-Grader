@@ -13,9 +13,9 @@ import (
 const listHeight = 14
 
 var (
-	titleStyle        = lipgloss.NewStyle().MarginLeft(2).Foreground(lipgloss.Color("34")).Background(lipgloss.Color("23"))
+	titleStyle        = lipgloss.NewStyle().MarginLeft(2).Foreground(lipgloss.Color("#FFA500"))
 	itemStyle         = lipgloss.NewStyle().PaddingLeft(4)
-	selectedItemStyle = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
+	selectedItemStyle = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("#00FF00"))
 	paginationStyle   = list.DefaultStyles().PaginationStyle.PaddingLeft(4)
 	helpStyle         = list.DefaultStyles().HelpStyle.PaddingLeft(4).PaddingBottom(1)
 	quitTextStyle     = lipgloss.NewStyle().Margin(1, 0, 1, 1)
@@ -63,6 +63,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		m.list.SetWidth(msg.Width)
+		if msg.Height > 10 {
+			m.list.SetHeight(msg.Height - 6)
+		}
 		return m, nil
 
 	case tea.KeyMsg:
@@ -89,19 +92,28 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	if m.Choice != "" {
-		return quitTextStyle.Render()
+		return "\033[H\033[2J"
 	}
 	if m.Quitting {
 		return quitTextStyle.Render("Bye Bye!")
 	}
-	return "\n" + m.list.View()
+
+	listBox := lipgloss.NewStyle().
+		Border(lipgloss.RoundedBorder()).
+		Padding(1, 2).
+		Margin(1, 0, 2).
+		Width(50).
+		Align(lipgloss.Center).
+		Render(m.list.View())
+
+	return "\n\n\n" + listBox
 }
 
 func InitializelListInput(items []list.Item) Model {
 	const defaultWidth = 20
 
 	l := list.New(items, itemDelegate{}, defaultWidth, listHeight)
-	l.Title = "Which Homeword do you want to grade?"
+	l.Title = "Which Homework do you want to grade?"
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(false)
 	l.Styles.Title = titleStyle
