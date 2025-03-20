@@ -66,8 +66,6 @@ var createCmd = &cobra.Command{
 				return
 			}
 		}
-
-		fmt.Println(selectedHomework, selectedPackage)
 	},
 }
 
