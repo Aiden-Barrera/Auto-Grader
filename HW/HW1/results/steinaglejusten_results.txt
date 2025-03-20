@@ -1,9 +1,9 @@
-HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\steinaglejusten\Segment.java:9: error: cannot find symbol
+steinaglejusten\Segment.java:9: error: cannot find symbol
 		this.a = new point(0,0);
 		             ^
   symbol:   class point
   location: class Segment
-HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\steinaglejusten\Segment.java:10: error: cannot find symbol
+steinaglejusten\Segment.java:10: error: cannot find symbol
 		this.b = new point(0,0);
 		             ^
   symbol:   class point

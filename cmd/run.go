@@ -9,9 +9,11 @@ import (
 	"Auto-Grader/graderbot"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 )
 
@@ -41,6 +43,7 @@ var runCmd = &cobra.Command{
 			cobra.CheckErr(err)
 		}
 
+		fmt.Print("\033[H\033[2J")
 		if model.(listInputs.Model).Quitting {
 			return
 		}
@@ -66,6 +69,12 @@ var runCmd = &cobra.Command{
 			cobra.CheckErr(err)
 		}
 
+		fmt.Print("\033[H\033[2J")
+
+		if !model.(textInputs.Model).Quitting {
+			return
+		}
+
 		inputs := model.(textInputs.Model).GetInputs()
 		selectedHomeworkPackage, selectedPackage, selectedTestName := inputs[0], inputs[1], inputs[2]
 
@@ -75,7 +84,39 @@ var runCmd = &cobra.Command{
 		} else {
 			graderbot.GraderConfig.SetTestName(fmt.Sprintf("%s.%s", selectedPackage, selectedTestName), selectedHomeworkPackage)
 		}
-		//graderbot.GradeStudents(selectedHomework)
+
+		// Define Lipgloss styles
+		boxStyle := lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			Padding(1, 2).
+			Margin(1, 0, 2).
+			Width(80). // Adjust width as needed
+			Align(lipgloss.Left)
+
+		titleStyle := lipgloss.NewStyle().Bold(true).Foreground(lipgloss.Color("#FFD700"))
+		studentStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#00FF00"))
+		errorStyle := lipgloss.NewStyle().Foreground(lipgloss.Color("#FF0000"))
+
+		results := graderbot.GradeStudents(selectedHomework)
+
+		var output []string
+		for _, res := range results {
+			if strings.Contains(res, "Error") {
+				output = append(output, errorStyle.Render(res))
+			} else {
+				output = append(output, studentStyle.Render(res))
+			}
+		}
+
+		// Print final formatted output
+		gradingResults := fmt.Sprintf(
+			"%s\n%s",
+			titleStyle.Render("📚 Grading Results 📚"),
+			strings.Join(output, "\n"),
+		)
+
+		formattedBox := boxStyle.Render(gradingResults)
+		fmt.Println(formattedBox)
 	},
 }
 

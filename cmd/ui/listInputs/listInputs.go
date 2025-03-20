@@ -79,7 +79,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if ok {
 				m.Choice = string(i)
 				// Debug: Print the selected item
-				fmt.Println("Selected item:", m.Choice)
+				//fmt.Println("Selected item:", m.Choice)
 			}
 			return m, tea.Quit
 		}
@@ -91,20 +91,24 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	if m.Choice != "" {
-		return "\033[H\033[2J"
-	}
 	if m.Quitting {
 		return quitTextStyle.Render("Bye Bye!")
 	}
 
-	listBox := lipgloss.NewStyle().
-		Border(lipgloss.RoundedBorder()).
-		Padding(1, 2).
-		Margin(1, 0, 2).
-		Width(50).
-		Align(lipgloss.Center).
-		Render(m.list.View())
+	listBox := ""
+	if len(m.list.Items()) > 0 {
+		listBox = lipgloss.NewStyle().
+			Border(lipgloss.RoundedBorder()).
+			Padding(1, 2).
+			Margin(1, 0, 2).
+			Width(50).
+			Align(lipgloss.Center).
+			Render(m.list.View())
+	}
+
+	if listBox == "" {
+		return ""
+	}
 
 	return "\n\n\n" + listBox
 }
