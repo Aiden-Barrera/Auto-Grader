@@ -22,33 +22,41 @@ type Model struct {
 	textInput    textinput.Model
 	stepIndex    int // Track current step
 	inputs       []string
-	prompts      []string
-	placeholders []string
+	Prompts      []string
+	Placeholders []string
 	err          error
 	mu           sync.Mutex
 }
 
+// func (m *Model) SetPrompts(prompt []string) {
+// 	m.mu.Lock()
+// 	defer m.mu.Unlock()
+// 	m.Prompts = append(m.Prompts, prompt...)
+// }
+
+// func (m *Model) GetPrompts() []string {
+// 	m.mu.Lock()
+// 	defer m.mu.Unlock()
+// 	return m.Prompts
+// }
+
 // Initialize Model with multiple steps
-func InitializeTextInput() Model {
+func InitializeTextInput(prompts []string, ph []string) Model {
 	ti := textinput.New()
 	ti.Focus()
 	ti.CharLimit = 156
 	ti.Width = 30
 
+	if len(ph) > 0 {
+		ti.Placeholder = ph[0]
+	}
+
 	return Model{
-		textInput: ti,
-		stepIndex: 0,
-		prompts: []string{
-			"What is the name of the Package used for the homework?",
-			"What is the name of the Test Package (Leave blank if none)?",
-			"What is the name of the Test file (Not including .java)?",
-		},
-		placeholders: []string{
-			"Enter package name",
-			"Enter test package",
-			"Enter test file name",
-		},
-		inputs: make([]string, 3),
+		textInput:    ti,
+		stepIndex:    0,
+		Prompts:      prompts,
+		Placeholders: ph,
+		inputs:       make([]string, len(prompts)),
 	}
 }
 
@@ -72,14 +80,14 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			m.mu.Unlock()
 
 			// Move to the next step
-			if m.stepIndex+1 >= len(m.prompts) {
+			if m.stepIndex+1 >= len(m.Prompts) {
 				return m, tea.Quit // Exit when all steps are completed
 			}
 
 			// Reset input field for next step
 			m.stepIndex++
 			m.textInput.SetValue("")
-			m.textInput.Placeholder = m.placeholders[m.stepIndex]
+			m.textInput.Placeholder = m.Placeholders[m.stepIndex]
 
 		case tea.KeyCtrlC, tea.KeyEsc:
 			return m, tea.Quit
@@ -96,7 +104,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 // View renders the UI
 func (m Model) View() string {
 	var b strings.Builder
-	fmt.Fprintf(&b, "%s\n\n", titleStyle.Render(m.prompts[m.stepIndex]))
+	fmt.Fprintf(&b, "%s\n\n", titleStyle.Render(m.Prompts[m.stepIndex]))
 	fmt.Fprintf(&b, "%s\n", inputStyle.Render(m.textInput.View()))
 	fmt.Fprintf(&b, "\n%s", borderStyle.Render("(Press Enter to continue, Esc to quit)"))
 	return lipgloss.NewStyle().

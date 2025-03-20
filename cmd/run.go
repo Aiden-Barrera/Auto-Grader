@@ -51,7 +51,16 @@ var runCmd = &cobra.Command{
 		}
 
 		// Run the multi-step input model
-		textInputProgram := tea.NewProgram(textInputs.InitializeTextInput())
+		prompts := []string{"What is the name of the Package used for the homework?",
+			"What is the name of the Test Package (Leave blank if none)?",
+			"What is the name of the Test file (Not including .java)?",
+		}
+		ph := []string{"Enter package name",
+			"Enter test package",
+			"Enter test file name",
+		}
+
+		textInputProgram := tea.NewProgram(textInputs.InitializeTextInput(prompts, ph))
 		model, err = textInputProgram.Run()
 		if err != nil {
 			cobra.CheckErr(err)
@@ -66,7 +75,7 @@ var runCmd = &cobra.Command{
 		} else {
 			graderbot.GraderConfig.SetTestName(fmt.Sprintf("%s.%s", selectedPackage, selectedTestName), selectedHomeworkPackage)
 		}
-		graderbot.GradeStudents(selectedHomework)
+		//graderbot.GradeStudents(selectedHomework)
 	},
 }
 
