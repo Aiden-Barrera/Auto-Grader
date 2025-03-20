@@ -15,14 +15,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// type item string
-
-// func (i item) FilterValue() string { return "" }
-
-// type listHomeworks struct {
-// 	items []list.Item
-// }
-
 // runCmd represents the run command
 var runCmd = &cobra.Command{
 	Use:   "run",
@@ -49,37 +41,24 @@ var runCmd = &cobra.Command{
 			cobra.CheckErr(err)
 		}
 
+		if model.(listInputs.Model).Quitting {
+			return
+		}
+
 		selectedHomework := model.(listInputs.Model).Choice
 		if selectedHomework == "" {
 			return
 		}
 
-		textInputs.InputText.SetInputText(fmt.Sprintf("What is the name of the Package used for %s", selectedHomework), fmt.Sprintf("Enter %s Package.", selectedHomework))
-		tprogram = tea.NewProgram(textInputs.InitializeTextInput())
-		model, err = tprogram.Run()
+		// Run the multi-step input model
+		textInputProgram := tea.NewProgram(textInputs.InitializeTextInput())
+		model, err = textInputProgram.Run()
 		if err != nil {
 			cobra.CheckErr(err)
 		}
 
-		selectedHomeworkPackage := model.(textInputs.Model).GetInputText()
-
-		textInputs.InputText.SetInputText("What is the name of Test Package (Leave blank if none)", "Enter Package.")
-		tprogram = tea.NewProgram(textInputs.InitializeTextInput())
-		model, err = tprogram.Run()
-		if err != nil {
-			cobra.CheckErr(err)
-		}
-
-		selectedPackage := model.(textInputs.Model).GetInputText()
-
-		textInputs.InputText.SetInputText("What is the name of the Test file (Not including .java)", "Enter Test.")
-		tprogram = tea.NewProgram(textInputs.InitializeTextInput())
-		model, err = tprogram.Run()
-		if err != nil {
-			cobra.CheckErr(err)
-		}
-
-		selectedTestName := model.(textInputs.Model).GetInputText()
+		inputs := model.(textInputs.Model).GetInputs()
+		selectedHomeworkPackage, selectedPackage, selectedTestName := inputs[0], inputs[1], inputs[2]
 
 		// Call the grading function with the selected homework
 		if selectedPackage == "" {

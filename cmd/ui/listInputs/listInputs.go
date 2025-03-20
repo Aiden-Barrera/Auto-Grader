@@ -13,12 +13,12 @@ import (
 const listHeight = 14
 
 var (
-	titleStyle        = lipgloss.NewStyle().MarginLeft(2).Foreground(lipgloss.Color("34"))
+	titleStyle        = lipgloss.NewStyle().MarginLeft(2).Foreground(lipgloss.Color("34")).Background(lipgloss.Color("23"))
 	itemStyle         = lipgloss.NewStyle().PaddingLeft(4)
 	selectedItemStyle = lipgloss.NewStyle().PaddingLeft(2).Foreground(lipgloss.Color("170"))
 	paginationStyle   = list.DefaultStyles().PaginationStyle.PaddingLeft(4)
 	helpStyle         = list.DefaultStyles().HelpStyle.PaddingLeft(4).PaddingBottom(1)
-	quitTextStyle     = lipgloss.NewStyle().Margin(1, 0, 2, 4)
+	quitTextStyle     = lipgloss.NewStyle().Margin(1, 0, 1, 1)
 )
 
 type Item string
@@ -52,7 +52,7 @@ func (d itemDelegate) Render(w io.Writer, m list.Model, index int, listItem list
 type Model struct {
 	list     list.Model
 	Choice   string
-	quitting bool
+	Quitting bool
 }
 
 func (m Model) Init() tea.Cmd {
@@ -68,7 +68,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch keypress := msg.String(); keypress {
 		case "q", "ctrl+c":
-			m.quitting = true
+			m.Quitting = true
 			return m, tea.Quit
 
 		case "enter":
@@ -89,9 +89,9 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m Model) View() string {
 	if m.Choice != "" {
-		return quitTextStyle.Render(fmt.Sprintf("Picked: %s", m.Choice))
+		return quitTextStyle.Render()
 	}
-	if m.quitting {
+	if m.Quitting {
 		return quitTextStyle.Render("Bye Bye!")
 	}
 	return "\n" + m.list.View()
