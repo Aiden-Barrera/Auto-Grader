@@ -1,39 +1,39 @@
-HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\bermudezdaniel\Segment.java:4: error: cannot find symbol
+bermudezdaniel\Segment.java:4: error: cannot find symbol
 	private Point a;
 	        ^
   symbol:   class Point
   location: class Segment
-HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\bermudezdaniel\Segment.java:5: error: cannot find symbol
+bermudezdaniel\Segment.java:5: error: cannot find symbol
 	private Point b;
 	        ^
   symbol:   class Point
   location: class Segment
-HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\bermudezdaniel\Segment.java:7: error: cannot find symbol
+bermudezdaniel\Segment.java:7: error: cannot find symbol
 	public Segment(Point a, Point b) {
 	               ^
   symbol:   class Point
   location: class Segment
-HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\bermudezdaniel\Segment.java:7: error: cannot find symbol
+bermudezdaniel\Segment.java:7: error: cannot find symbol
 	public Segment(Point a, Point b) {
 	                        ^
   symbol:   class Point
   location: class Segment
-HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\bermudezdaniel\Segment.java:12: error: cannot find symbol
+bermudezdaniel\Segment.java:12: error: cannot find symbol
 	public void setEndPoints(Point a, Point b) {
 	                         ^
   symbol:   class Point
   location: class Segment
-HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\bermudezdaniel\Segment.java:12: error: cannot find symbol
+bermudezdaniel\Segment.java:12: error: cannot find symbol
 	public void setEndPoints(Point a, Point b) {
 	                                  ^
   symbol:   class Point
   location: class Segment
-HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\bermudezdaniel\Segment.java:18: error: cannot find symbol
+bermudezdaniel\Segment.java:18: error: cannot find symbol
 		this.a = new Point(x1, y1);
 		             ^
   symbol:   class Point
   location: class Segment
-HW\HW1\students\zhoubrandon_64935_7748849_flatland\flatland\bermudezdaniel\Segment.java:19: error: cannot find symbol
+bermudezdaniel\Segment.java:19: error: cannot find symbol
 		this.b = new Point(x2, y2);
 		             ^
   symbol:   class Point

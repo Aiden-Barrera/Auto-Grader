@@ -45,7 +45,8 @@ var createCmd = &cobra.Command{
 
 		for _, entry := range entries {
 			if entry.Name() == selectedHomework {
-				fmt.Printf("homework file %s already created", selectedHomework)
+				fmt.Print("\033[H\033[2J")
+				fmt.Printf("Error: homework file %s already created", selectedHomework)
 				return
 			}
 		}
@@ -66,6 +67,7 @@ var createCmd = &cobra.Command{
 				return
 			}
 		}
+		fmt.Print("\033[H\033[2J")
 	},
 }
 

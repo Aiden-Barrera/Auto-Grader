@@ -212,7 +212,7 @@ func grading(studentOutput string, expectedOutput string, resultFile *os.File) (
 	return similarity, err
 }
 
-func executeTestFile(studentName string, binPath string, resultFile *os.File, errChan chan error) error {
+func executeTestFile(studentName string, binPath string, resultFile *os.File, errChan chan error) (string, error) {
 	testName := GraderConfig.GetTestName() // Dynamically Get Test Name
 
 	cmd := exec.Command("java", "-cp", binPath, testName)
@@ -220,29 +220,30 @@ func executeTestFile(studentName string, binPath string, resultFile *os.File, er
 	cmd.Stderr = resultFile
 	if err := cmd.Run(); err != nil {
 		errChan <- fmt.Errorf("error running tester for %s: %v", studentName, err)
-		return err
+		return "", err
 	}
 
 	studentOutput, expectedOutput := fmt.Sprintf("%s/%s_results.txt", resultsFilePath, studentName), fmt.Sprintf("%s/output.txt", expectedOutputPath)
 	score, err := grading(studentOutput, expectedOutput, resultFile)
 	if err != nil {
 		errChan <- fmt.Errorf("error grading %s: %v", studentName, err)
-		return err
+		return "", err
 	}
 
 	// Protect shared resource with mutex
 	mu.Lock()
-	fmt.Printf("Similarity for %s: %f%%\n", studentName, score)
+	result := fmt.Sprintf("Similarity for %s: %f%%\n", studentName, score)
 	fmt.Fprintf(resultFile, "Similarity for %s: %f%%\n", studentName, score)
 	mu.Unlock()
 
-	return nil
+	return result, nil
 }
 
-func GradeStudents(selectedHW string) {
+func GradeStudents(selectedHW string) []string {
 	HW := selectedHW
 	dirPath := fmt.Sprintf("HW/%s/", HW) // This will be be changed depending on the HW
 
+	var results []string
 	gradedStudents := make(map[string]bool)
 
 	// This walks through the directory for
@@ -270,13 +271,12 @@ func GradeStudents(selectedHW string) {
 	})
 
 	if err != nil {
-		fmt.Println("Error Walking Through Directory: ", err)
+		return []string{"Error Walking Through Directory: " + err.Error()}
 	}
 
 	studentEntries, err := os.ReadDir(studentFilePath)
 	if err != nil {
-		fmt.Println("Error Reading ", studentFilePath)
-		return
+		return []string{"Error Reading " + studentFilePath}
 	}
 
 	errChan := make(chan error, len(studentEntries)*2)
@@ -363,9 +363,17 @@ func GradeStudents(selectedHW string) {
 			// Compile and Execute Students Work
 			if localErr = compile(studentPath, studentDependencyPath, testFilePath, studentBinPath, resultFile); localErr != nil {
 				errChan <- fmt.Errorf("compilation Error for %s: %v", studentName, localErr)
-			} else if localErr = executeTestFile(studentName, studentBinPath, resultFile, errChan); localErr != nil {
-				errChan <- fmt.Errorf("execution Error for %s: %v", studentName, localErr)
+			} else {
+				output, localErr := executeTestFile(studentName, studentBinPath, resultFile, errChan)
+				if localErr != nil {
+					errChan <- fmt.Errorf("execution Error for %s: %v", studentName, localErr)
+				}
+
+				mu.Lock()
+				results = append(results, output)
+				mu.Unlock()
 			}
+
 			if localErr = deleteJavaFiles(studentDependencyPath); localErr != nil {
 				errChan <- fmt.Errorf("deleting failed for %s: %v", studentName, localErr)
 			}
@@ -381,10 +389,15 @@ func GradeStudents(selectedHW string) {
 	close(errChan)
 
 	// Handle Errors after all goroutines complete
-	fmt.Println()
-	fmt.Println("Error Logs")
+	mu.Lock()
+	results = append(results, "\nError logs")
+	mu.Unlock()
+
 	for err := range errChan {
-		fmt.Println("Error:", err)
+		mu.Lock()
+		results = append(results, fmt.Sprintf("Error: %v", err))
+		mu.Unlock()
 	}
 
+	return results
 }

@@ -24,6 +24,7 @@ type Model struct {
 	inputs       []string
 	Prompts      []string
 	Placeholders []string
+	Quitting     bool
 	err          error
 	mu           sync.Mutex
 }
@@ -81,6 +82,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			// Move to the next step
 			if m.stepIndex+1 >= len(m.Prompts) {
+				m.Quitting = true
 				return m, tea.Quit // Exit when all steps are completed
 			}
 
