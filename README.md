@@ -27,9 +27,9 @@ HW_FOLDER/
 
 ## Installation & Usage
 
-### 0. Install GO 
+### 0. Install GO for your OS
 ```sh
-https://go.dev/  //Download GO for your machine
+https://go.dev/ 
 ```
 
 ### 1. Clone the Repository
