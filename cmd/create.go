@@ -67,6 +67,14 @@ var createCmd = &cobra.Command{
 				return
 			}
 		}
+
+		filePath := fmt.Sprintf("HW/%s/expectedOutput/output.txt", selectedHomework)
+		file, err := os.Create(filePath)
+		if err != nil {
+			cobra.CheckErr(err)
+		}
+		defer file.Close()
+
 		fmt.Print("\033[H\033[2J")
 	},
 }
