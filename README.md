@@ -96,5 +96,6 @@ After running, results are stored in the `results/` folder, where you can find:
 6. Review results in the `results/` folder.
 
 ## Notes
+- Ensure GO is installed and available in the system path.
 - Ensure Java is installed and available in the system path.
 - Student submissions should follow the correct package naming convention.
