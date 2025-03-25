@@ -35,6 +35,10 @@ var createCmd = &cobra.Command{
 			return
 		}
 
+		if !model.(textInputs.Model).Quitting {
+			return
+		}
+
 		selectedHomework, selectedPackage := model.(textInputs.Model).GetInputs()[0], model.(textInputs.Model).GetInputs()[1]
 
 		entries, err := os.ReadDir(dirPath)
