@@ -13,6 +13,7 @@ import (
 )
 
 var (
+	dirPath              string
 	studentFilePath      string
 	dependenciesFilePath string
 	testFilePath         string
@@ -117,33 +118,69 @@ func compile(studentPath string, dependPath string, testPath string, binPath str
 		return fmt.Errorf("failed to copy student files: %v", err)
 	}
 
-	cmd := exec.Command("javac", "-d", binPath, "-cp", binPath)
+	cmd := exec.Command("javac", "-d", ".", "-cp", fmt.Sprintf("%s%c%s", dependPath, filepath.ListSeparator, testPath))
 	tmpFiles, err := filepath.Glob(filepath.Join(dependPath, "*.java"))
 	if err != nil {
 		return err
 	}
+
+	for i, file := range tmpFiles {
+		tmpFiles[i] = filepath.Base(file) // Get the filename only
+	}
+
+	cmd.Dir = dependPath
+
 	cmd.Args = append(cmd.Args, tmpFiles...)
+
+	//fmt.Println("Executing command:", strings.Join(cmd.Args, " "))
 
 	cmd.Stdout = resultFile
 	cmd.Stderr = resultFile
 
-	//fmt.Println("Compiling:", tmpFiles)
+	//fmt.Println("Compiling files:", tmpFiles)
 
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("compilation failed: %v", err)
+		return fmt.Errorf("compilation failed before test: %v", err)
 	}
 
-	testFile, err := filepath.Glob(filepath.Join(testPath, "*.java"))
+	err = filepath.Walk(testPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() && filepath.Ext(path) == ".java" {
+			dest := filepath.Join(dependPath, filepath.Base(path))
+			if err := copyFiles(path, dest); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("error copying test files: %v", err)
+	}
+
+	testFiles, err := filepath.Glob(filepath.Join(dependPath, "*.java"))
 	if err != nil {
 		return err
 	}
-	cmd = exec.Command("javac", "-d", binPath, "-cp", binPath)
-	cmd.Args = append(cmd.Args, testFile...)
+
+	cmd = exec.Command("javac", "-d", ".", "-cp", dependPath)
+
+	cmd.Dir = dependPath
+	fmt.Println("Cmd Dir: ", cmd.Dir)
+
+	// for i, file := range testFile {
+	// 	testFile[i] = filepath.Join(filepath.Base(file))
+	// }
+
+	cmd.Args = append(cmd.Args, testFiles...)
 
 	cmd.Stdout = resultFile
 	cmd.Stderr = resultFile
 
-	//fmt.Println("Compiling Tester:", testFile)
+	fmt.Println("Executing command:", strings.Join(cmd.Args, " "))
+
+	fmt.Println("Compiling Tester:", testFiles)
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("compilation failed: %v", err)
 	}
@@ -241,13 +278,14 @@ func executeTestFile(studentName string, binPath string, resultFile *os.File, er
 
 func GradeStudents(selectedHW string) []string {
 	HW := selectedHW
-	dirPath := fmt.Sprintf("HW/%s/", HW) // This will be be changed depending on the HW
+	dirPath = fmt.Sprintf("HW/%s/", HW) // This will be be changed depending on the HW
 
 	var results []string
 	gradedStudents := make(map[string]bool)
 
 	// This walks through the directory for
 	// gathering student,dependecies,test paths
+	dependenciesFilePath = filepath.Join(dirPath, "/dependencies/")
 	err := filepath.WalkDir(dirPath, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
 			fmt.Println("Error: ", err)
@@ -255,8 +293,6 @@ func GradeStudents(selectedHW string) []string {
 		}
 
 		switch d.Name() {
-		case GraderConfig.packageName: // Change this to correct package name
-			dependenciesFilePath = filepath.Join(path)
 		case "students":
 			studentFilePath = filepath.Join(path)
 		case "test":

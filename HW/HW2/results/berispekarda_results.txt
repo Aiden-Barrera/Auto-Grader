@@ -1,6 +1,3 @@
-HW\HW2\test\test.java:47: error: cannot find symbol
-		System.out.println(String.format("p3(2.5): %s", testPolynomials[3].atPoint(2)));
-		                                                                  ^
-  symbol:   method atPoint(int)
-  location: class Polynomial
-1 error
+error: file not found: HW\HW2\dependencies\berispekarda\LinearPolynomial.java
+Usage: javac <options> <source files>
+use --help for a list of possible options

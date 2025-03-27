@@ -1,19 +1,19 @@
-HW\HW2\students\zhoubrandon_64935_7791266_Week_2_Homework\Week_2_Homework\src\polynomial\salinasdiego\QuadraticPolynomial.java:6: error: no suitable constructor found for Polynomial(int,int,int)
+QuadraticPolynomial.java:6: error: no suitable constructor found for Polynomial(int,int,int)
 		super(A, B, C);
 		^
     constructor Polynomial.Polynomial() is not applicable
       (actual and formal argument lists differ in length)
     constructor Polynomial.Polynomial(int[]) is not applicable
       (actual and formal argument lists differ in length)
-HW\HW2\students\zhoubrandon_64935_7791266_Week_2_Homework\Week_2_Homework\src\polynomial\salinasdiego\QuadraticPolynomial.java:10: error: cannot find symbol
+QuadraticPolynomial.java:10: error: cannot find symbol
         double A = this.getA();
                        ^
   symbol: method getA()
-HW\HW2\students\zhoubrandon_64935_7791266_Week_2_Homework\Week_2_Homework\src\polynomial\salinasdiego\QuadraticPolynomial.java:11: error: cannot find symbol
+QuadraticPolynomial.java:11: error: cannot find symbol
         double B = this.getB();
                        ^
   symbol: method getB()
-HW\HW2\students\zhoubrandon_64935_7791266_Week_2_Homework\Week_2_Homework\src\polynomial\salinasdiego\QuadraticPolynomial.java:12: error: cannot find symbol
+QuadraticPolynomial.java:12: error: cannot find symbol
         double C = this.getC();
                        ^
   symbol: method getC()
