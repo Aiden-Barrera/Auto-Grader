@@ -2,9 +2,6 @@ package Tester;
 
 import comparables.Point;
 import comparables.Polynomial;
-import pets.Cat;
-import pets.Dog;
-import pets.Pet;
 import Tester.BasicSorting;
 
 public class Tester {

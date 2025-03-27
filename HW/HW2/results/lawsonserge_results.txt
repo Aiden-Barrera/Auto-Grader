@@ -1,3 +1,10 @@
-error: file not found: HW\HW2\dependencies\lawsonserge\LinearPolynomial.java
-Usage: javac <options> <source files>
-use --help for a list of possible options
+test.java:3: error: package polynomial does not exist
+import polynomial.LinearPolynomial;
+                 ^
+test.java:4: error: package polynomial does not exist
+import polynomial.Polynomial;
+                 ^
+test.java:5: error: package polynomial does not exist
+import polynomial.QuadraticPolynomial;
+                 ^
+3 errors

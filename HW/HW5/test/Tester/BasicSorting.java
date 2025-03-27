@@ -1,5 +1,4 @@
 package Tester;
-
 public class BasicSorting {
 	/* Implementation on insertion sort*/
 	public static <T extends Comparable<T>> void insertionSort(T[] arr) {

@@ -39,7 +39,7 @@ var createCmd = &cobra.Command{
 			return
 		}
 
-		selectedHomework, selectedPackage := model.(textInputs.Model).GetInputs()[0], model.(textInputs.Model).GetInputs()[1]
+		selectedHomework := model.(textInputs.Model).GetInputs()[0]
 
 		entries, err := os.ReadDir(dirPath)
 		if err != nil {
@@ -57,8 +57,7 @@ var createCmd = &cobra.Command{
 
 		homeworkPaths := []string{
 			fmt.Sprintf("HW/%s/", selectedHomework),
-			fmt.Sprintf("HW/%s/bin", selectedHomework),
-			fmt.Sprintf("HW/%s/dependencies/%s", selectedHomework, selectedPackage),
+			fmt.Sprintf("HW/%s/dependencies/", selectedHomework),
 			fmt.Sprintf("HW/%s/expectedOutput", selectedHomework),
 			fmt.Sprintf("HW/%s/results", selectedHomework),
 			fmt.Sprintf("HW/%s/students", selectedHomework),
