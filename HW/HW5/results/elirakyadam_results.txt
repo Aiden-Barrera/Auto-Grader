@@ -1,0 +1,61 @@
+Tester.java:19: error: constructor Polynomial in class Polynomial cannot be applied to given types;
+		Polynomial p0 = new Polynomial(new int[] {-4,6,5});
+		                ^
+  required: int,int[]
+  found:    int[]
+  reason: actual and formal argument lists differ in length
+Tester.java:20: error: constructor Polynomial in class Polynomial cannot be applied to given types;
+		Polynomial p1 = new Polynomial(new int[] {2, -1});
+		                ^
+  required: int,int[]
+  found:    int[]
+  reason: actual and formal argument lists differ in length
+Tester.java:21: error: constructor Polynomial in class Polynomial cannot be applied to given types;
+		Polynomial p2 = new Polynomial(new int[] {3,0,4,1});
+		                ^
+  required: int,int[]
+  found:    int[]
+  reason: actual and formal argument lists differ in length
+Tester.java:22: error: constructor Polynomial in class Polynomial cannot be applied to given types;
+		Polynomial p3 = new Polynomial(new int[] {-1,4});
+		                ^
+  required: int,int[]
+  found:    int[]
+  reason: actual and formal argument lists differ in length
+Tester.java:23: error: constructor Polynomial in class Polynomial cannot be applied to given types;
+		Polynomial p4 = new Polynomial(new int[] {3,-1});
+		                ^
+  required: int,int[]
+  found:    int[]
+  reason: actual and formal argument lists differ in length
+Tester.java:24: error: constructor Polynomial in class Polynomial cannot be applied to given types;
+		Polynomial p5 = new Polynomial(new int[] {-7,0,0,4});
+		                ^
+  required: int,int[]
+  found:    int[]
+  reason: actual and formal argument lists differ in length
+Tester.java:25: error: constructor Polynomial in class Polynomial cannot be applied to given types;
+		Polynomial p6 = new Polynomial(new int[] {0,6,5});
+		                ^
+  required: int,int[]
+  found:    int[]
+  reason: actual and formal argument lists differ in length
+Tester.java:26: error: constructor Polynomial in class Polynomial cannot be applied to given types;
+		Polynomial p7 = new Polynomial(new int[] {28});
+		                ^
+  required: int,int[]
+  found:    int[]
+  reason: actual and formal argument lists differ in length
+Tester.java:27: error: constructor Polynomial in class Polynomial cannot be applied to given types;
+		Polynomial p8 = new Polynomial(new int[] {2, -1});
+		                ^
+  required: int,int[]
+  found:    int[]
+  reason: actual and formal argument lists differ in length
+Tester.java:28: error: constructor Polynomial in class Polynomial cannot be applied to given types;
+		Polynomial p9 = new Polynomial(new int[] {0});
+		                ^
+  required: int,int[]
+  found:    int[]
+  reason: actual and formal argument lists differ in length
+10 errors

@@ -1,4 +1,4 @@
-HW\HW1\test\Tester.java:17: error: cannot find symbol
+Tester.java:17: error: cannot find symbol
 		System.out.println("length of seg: " + seg.GetLength());
 		                                          ^
   symbol:   method GetLength()

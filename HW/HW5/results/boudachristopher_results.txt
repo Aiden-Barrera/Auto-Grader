@@ -1,0 +1,177 @@
+Tester.java:3: error: package comparables does not exist
+import comparables.Point;
+                  ^
+Tester.java:4: error: package comparables does not exist
+import comparables.Polynomial;
+                  ^
+Tester.java:19: error: cannot find symbol
+		Polynomial p0 = new Polynomial(new int[] {-4,6,5});
+		^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:19: error: cannot find symbol
+		Polynomial p0 = new Polynomial(new int[] {-4,6,5});
+		                    ^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:20: error: cannot find symbol
+		Polynomial p1 = new Polynomial(new int[] {2, -1});
+		^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:20: error: cannot find symbol
+		Polynomial p1 = new Polynomial(new int[] {2, -1});
+		                    ^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:21: error: cannot find symbol
+		Polynomial p2 = new Polynomial(new int[] {3,0,4,1});
+		^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:21: error: cannot find symbol
+		Polynomial p2 = new Polynomial(new int[] {3,0,4,1});
+		                    ^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:22: error: cannot find symbol
+		Polynomial p3 = new Polynomial(new int[] {-1,4});
+		^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:22: error: cannot find symbol
+		Polynomial p3 = new Polynomial(new int[] {-1,4});
+		                    ^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:23: error: cannot find symbol
+		Polynomial p4 = new Polynomial(new int[] {3,-1});
+		^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:23: error: cannot find symbol
+		Polynomial p4 = new Polynomial(new int[] {3,-1});
+		                    ^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:24: error: cannot find symbol
+		Polynomial p5 = new Polynomial(new int[] {-7,0,0,4});
+		^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:24: error: cannot find symbol
+		Polynomial p5 = new Polynomial(new int[] {-7,0,0,4});
+		                    ^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:25: error: cannot find symbol
+		Polynomial p6 = new Polynomial(new int[] {0,6,5});
+		^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:25: error: cannot find symbol
+		Polynomial p6 = new Polynomial(new int[] {0,6,5});
+		                    ^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:26: error: cannot find symbol
+		Polynomial p7 = new Polynomial(new int[] {28});
+		^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:26: error: cannot find symbol
+		Polynomial p7 = new Polynomial(new int[] {28});
+		                    ^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:27: error: cannot find symbol
+		Polynomial p8 = new Polynomial(new int[] {2, -1});
+		^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:27: error: cannot find symbol
+		Polynomial p8 = new Polynomial(new int[] {2, -1});
+		                    ^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:28: error: cannot find symbol
+		Polynomial p9 = new Polynomial(new int[] {0});
+		^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:28: error: cannot find symbol
+		Polynomial p9 = new Polynomial(new int[] {0});
+		                    ^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:30: error: cannot find symbol
+		Polynomial[] testPolynomials = new Polynomial[] {p0,p1,p2,p3,p4,p5,p6,p7,p8,p9};
+		^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:30: error: cannot find symbol
+		Polynomial[] testPolynomials = new Polynomial[] {p0,p1,p2,p3,p4,p5,p6,p7,p8,p9};
+		                                   ^
+  symbol:   class Polynomial
+  location: class Tester
+Tester.java:47: error: cannot find symbol
+		Point p1 = new Point(5, 7);
+		^
+  symbol:   class Point
+  location: class Tester
+Tester.java:47: error: cannot find symbol
+		Point p1 = new Point(5, 7);
+		               ^
+  symbol:   class Point
+  location: class Tester
+Tester.java:48: error: cannot find symbol
+		Point p2 = new Point(-4, 5);
+		^
+  symbol:   class Point
+  location: class Tester
+Tester.java:48: error: cannot find symbol
+		Point p2 = new Point(-4, 5);
+		               ^
+  symbol:   class Point
+  location: class Tester
+Tester.java:49: error: cannot find symbol
+		Point p3 = new Point(1, 5);
+		^
+  symbol:   class Point
+  location: class Tester
+Tester.java:49: error: cannot find symbol
+		Point p3 = new Point(1, 5);
+		               ^
+  symbol:   class Point
+  location: class Tester
+Tester.java:50: error: cannot find symbol
+		Point p4 = new Point(-4, 2);
+		^
+  symbol:   class Point
+  location: class Tester
+Tester.java:50: error: cannot find symbol
+		Point p4 = new Point(-4, 2);
+		               ^
+  symbol:   class Point
+  location: class Tester
+Tester.java:51: error: cannot find symbol
+		Point p5 = new Point(2, -2);
+		^
+  symbol:   class Point
+  location: class Tester
+Tester.java:51: error: cannot find symbol
+		Point p5 = new Point(2, -2);
+		               ^
+  symbol:   class Point
+  location: class Tester
+Tester.java:53: error: cannot find symbol
+		Point[] arrPoints = new Point[] {p1,p2,p3,p4,p5};
+		^
+  symbol:   class Point
+  location: class Tester
+Tester.java:53: error: cannot find symbol
+		Point[] arrPoints = new Point[] {p1,p2,p3,p4,p5};
+		                        ^
+  symbol:   class Point
+  location: class Tester
+36 errors

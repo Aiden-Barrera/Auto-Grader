@@ -1,4 +1,4 @@
-HW\HW2\test\test.java:47: error: cannot find symbol
+test.java:47: error: cannot find symbol
 		System.out.println(String.format("p3(2.5): %s", testPolynomials[3].atPoint(2)));
 		                                                                  ^
   symbol:   method atPoint(int)

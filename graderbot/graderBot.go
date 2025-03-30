@@ -13,6 +13,7 @@ import (
 )
 
 var (
+	dirPath              string
 	studentFilePath      string
 	dependenciesFilePath string
 	testFilePath         string
@@ -46,7 +47,7 @@ func (c *Config) GetTestName() string {
 }
 
 // copyFiles copies all Java files from srcDir to destDir, except for a specific file.
-func copyFiles(srcDir, destDir string) error {
+func copyFiles(srcDir, destDir string, flag bool) error {
 	files, err := filepath.Glob(filepath.Join(srcDir, "*.java"))
 	if err != nil {
 		return err
@@ -54,7 +55,7 @@ func copyFiles(srcDir, destDir string) error {
 
 	for _, file := range files {
 		_, fileName := filepath.Split(file)
-		if fileName == fmt.Sprintf("%s.java", GraderConfig.testName) { // Avoid Student's Tester file
+		if fileName == fmt.Sprintf("%s.java", GraderConfig.testName) && flag { // Avoid Student's Tester file
 			continue // Skip the specific file
 		}
 		destPath := filepath.Join(destDir, fileName)
@@ -93,7 +94,7 @@ func deleteJavaFiles(dirPath string) error {
 	return nil
 }
 
-func cleanBin(binPath string) error {
+func cleanDependency(binPath string) error {
 	entries, err := os.ReadDir(binPath)
 	if err != nil {
 		return err
@@ -111,39 +112,73 @@ func cleanBin(binPath string) error {
 	return nil
 }
 
-func compile(studentPath string, dependPath string, testPath string, binPath string, resultFile *os.File) error {
+func compile(studentPath string, dependPath string, testPath string, resultFile *os.File) error {
 	// Copy student's Java files to dependency folder, skipping a specific file
-	if err := copyFiles(studentPath, dependPath); err != nil {
+	if err := copyFiles(studentPath, dependPath, true); err != nil {
 		return fmt.Errorf("failed to copy student files: %v", err)
 	}
 
-	cmd := exec.Command("javac", "-d", binPath, "-cp", binPath)
+	cmd := exec.Command("javac", "-d", ".", "-cp", fmt.Sprintf("%s%c%s", dependPath, filepath.ListSeparator, testPath))
 	tmpFiles, err := filepath.Glob(filepath.Join(dependPath, "*.java"))
 	if err != nil {
 		return err
 	}
+
+	for i, file := range tmpFiles {
+		tmpFiles[i] = filepath.Base(file) // Get the filename only
+	}
+
+	cmd.Dir = dependPath
+
 	cmd.Args = append(cmd.Args, tmpFiles...)
+
+	//fmt.Println("Executing command:", strings.Join(cmd.Args, " "))
 
 	cmd.Stdout = resultFile
 	cmd.Stderr = resultFile
 
-	//fmt.Println("Compiling:", tmpFiles)
+	//fmt.Println("Compiling files:", tmpFiles)
 
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("compilation failed: %v", err)
+		return fmt.Errorf("compilation failed before test: %v", err)
 	}
 
-	testFile, err := filepath.Glob(filepath.Join(testPath, "*.java"))
+	srcPath := ""
+	err = filepath.Walk(testPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() && filepath.Ext(path) == ".java" {
+			srcPath = filepath.Join(filepath.Dir(path))
+		}
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("error copying test files: %v", err)
+	}
+
+	if err := copyFiles(srcPath, dependPath, false); err != nil {
+		return fmt.Errorf("failed to test student files: %v", err)
+	}
+
+	testFiles, err := filepath.Glob(filepath.Join(dependPath, "*.java"))
 	if err != nil {
 		return err
 	}
-	cmd = exec.Command("javac", "-d", binPath, "-cp", binPath)
-	cmd.Args = append(cmd.Args, testFile...)
+
+	cmd = exec.Command("javac", "-d", ".", "-cp", dependPath)
+
+	for i, file := range testFiles {
+		testFiles[i] = filepath.Base(file) // Get the filename only
+	}
+
+	cmd.Dir = dependPath
+
+	cmd.Args = append(cmd.Args, testFiles...)
 
 	cmd.Stdout = resultFile
 	cmd.Stderr = resultFile
 
-	//fmt.Println("Compiling Tester:", testFile)
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("compilation failed: %v", err)
 	}
@@ -212,10 +247,10 @@ func grading(studentOutput string, expectedOutput string, resultFile *os.File) (
 	return similarity, err
 }
 
-func executeTestFile(studentName string, binPath string, resultFile *os.File, errChan chan error) (string, error) {
+func executeTestFile(studentName string, dependPath string, resultFile *os.File, errChan chan error) (string, error) {
 	testName := GraderConfig.GetTestName() // Dynamically Get Test Name
 
-	cmd := exec.Command("java", "-cp", binPath, testName)
+	cmd := exec.Command("java", "-cp", dependPath, testName)
 	cmd.Stdout = resultFile
 	cmd.Stderr = resultFile
 	if err := cmd.Run(); err != nil {
@@ -241,13 +276,14 @@ func executeTestFile(studentName string, binPath string, resultFile *os.File, er
 
 func GradeStudents(selectedHW string) []string {
 	HW := selectedHW
-	dirPath := fmt.Sprintf("HW/%s/", HW) // This will be be changed depending on the HW
+	dirPath = fmt.Sprintf("HW/%s/", HW) // This will be be changed depending on the HW
 
 	var results []string
 	gradedStudents := make(map[string]bool)
 
 	// This walks through the directory for
 	// gathering student,dependecies,test paths
+	dependenciesFilePath = filepath.Join(dirPath, "/dependencies/")
 	err := filepath.WalkDir(dirPath, func(path string, d os.DirEntry, err error) error {
 		if err != nil {
 			fmt.Println("Error: ", err)
@@ -255,8 +291,6 @@ func GradeStudents(selectedHW string) []string {
 		}
 
 		switch d.Name() {
-		case GraderConfig.packageName: // Change this to correct package name
-			dependenciesFilePath = filepath.Join(path)
 		case "students":
 			studentFilePath = filepath.Join(path)
 		case "test":
@@ -302,13 +336,6 @@ func GradeStudents(selectedHW string) []string {
 		go func(studentName string, studentDir string) {
 			defer wg.Done()
 			//fmt.Println("Grading Student:", studentName)
-
-			// Create a unique binPath for each student
-			studentBinPath := filepath.Join(dirPath, "bin", studentName)
-			if err := os.MkdirAll(studentBinPath, os.ModePerm); err != nil {
-				errChan <- fmt.Errorf("failed to create bin directory for %s: %v", studentName, err)
-				return
-			}
 
 			studentDependencyPath := filepath.Join(dependenciesFilePath, studentName)
 			if err := os.MkdirAll(studentDependencyPath, os.ModePerm); err != nil {
@@ -361,10 +388,10 @@ func GradeStudents(selectedHW string) []string {
 			}
 
 			// Compile and Execute Students Work
-			if localErr = compile(studentPath, studentDependencyPath, testFilePath, studentBinPath, resultFile); localErr != nil {
+			if localErr = compile(studentPath, studentDependencyPath, testFilePath, resultFile); localErr != nil {
 				errChan <- fmt.Errorf("compilation Error for %s: %v", studentName, localErr)
 			} else {
-				output, localErr := executeTestFile(studentName, studentBinPath, resultFile, errChan)
+				output, localErr := executeTestFile(studentName, studentDependencyPath, resultFile, errChan)
 				if localErr != nil {
 					errChan <- fmt.Errorf("execution Error for %s: %v", studentName, localErr)
 				}
@@ -377,12 +404,6 @@ func GradeStudents(selectedHW string) []string {
 			if localErr = deleteJavaFiles(studentDependencyPath); localErr != nil {
 				errChan <- fmt.Errorf("deleting failed for %s: %v", studentName, localErr)
 			}
-			if localErr = cleanBin(studentBinPath); localErr != nil {
-				errChan <- fmt.Errorf("cleaning failed for %s: %v", studentName, localErr)
-			}
-			if err := os.RemoveAll(studentBinPath); err != nil {
-				errChan <- fmt.Errorf("failed to delete %s: %v", studentBinPath, err)
-			}
 		}(studentName, studentDir) // Pass variables as arguments to avoid race conditions
 	}
 	wg.Wait()
@@ -392,6 +413,11 @@ func GradeStudents(selectedHW string) []string {
 	mu.Lock()
 	results = append(results, "\nError logs")
 	mu.Unlock()
+
+	if err := cleanDependency(dependenciesFilePath); err != nil {
+		mu.Lock()
+		results = append(results, fmt.Sprintf("Error cleaning dependencies: %v", err))
+	}
 
 	for err := range errChan {
 		mu.Lock()
