@@ -14,7 +14,6 @@ Auto-Grader is a command-line tool designed to grade students' Java homework sub
 When running the Auto-Grader, the following folder structure is used:
 ```
 HW_FOLDER/
-│── bin/                # Compiled Java files
 │── dependencies/       # Used for compiling students code with the package name
 │── expectedoutput/     # Contains expected output (output.txt)
 │── results/            # Stores grading results for each student
